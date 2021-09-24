@@ -10,5 +10,6 @@ Player::Player(int x, int y)
 
 void Player::update(Events::updateEvent ev)
 {
-	
+	std::cout << "update\n";
+	Game::removeGlobalObject(this);
 }

@@ -1,4 +1,5 @@
 #include "includes.h"
+#include <algorithm>
 #include "Player.h"
 #include "Game.h"
 using namespace std;
@@ -68,5 +69,6 @@ void Game::addGlobalObject(Object* obj)
 
 void Game::removeGlobalObject(Object* obj)
 {
+	// TODO (i'm breaddead)
 
 }
