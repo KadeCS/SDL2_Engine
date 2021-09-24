@@ -1,10 +1,4 @@
 
-.vs/SDL2 Test/v16/.suo
-.vs/SDL2 Test/v16/Browse.VC.db
-.vs/SDL2 Test/v16/Browse.VC.opendb
-.vs/SDL2 Test/v16/ipch/AutoPCH/55602eb155124741/GAME.ipch
-.vs/SDL2 Test/v16/ipch/AutoPCH/6a8018652a880597/DRAW.ipch
-.vs/SDL2 Test/v16/ipch/AutoPCH/db4986384d1728b/INCLUDES.ipch
-.vs/SDL2 Test/v16/ipch/AutoPCH/fbcecc2940fa309c/MAIN.ipch
 Debug
 x64
+.vs/SDL2 Test/

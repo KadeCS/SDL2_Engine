@@ -6,6 +6,7 @@ using namespace std;
 
 #pragma comment(lib,"C:/Users/millk290/source/repos/SDL2 Test/SDL2 Test/lib/x86/SDL2.lib")
 
+
 int main(int argc, char* argv[])
 {
 	SDL_Init(SDL_INIT_EVERYTHING);
@@ -41,7 +42,7 @@ int main(int argc, char* argv[])
 
 		}
 
-		Game::updateEvent updateEvent;
+		Events::updateEvent updateEvent;
 
 		updateEvent.renderer = renderer;
 		updateEvent.window = window;
