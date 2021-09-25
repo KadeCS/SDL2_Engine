@@ -6,16 +6,26 @@ using namespace std;
 
 vector<Object*> objects = {};
 
-Player *p = NULL;
+map<int, bool> Game::controls = {
+	{SDLK_w, false},
+	{SDLK_s, false},
+	{SDLK_a, false},
+	{SDLK_d, false},
+};
 
+SDL_Window* Game::window;
+
+int Game::gameFPS;
 
 void Game::update(Events::updateEvent update)
 {
-	SDL_SetWindowTitle(update.window, to_string(SDL_GetTicks()).append(" Ticks have passed").c_str());
+	int startTick = SDL_GetTicks();
 
-	SDL_SetRenderDrawColor(update.renderer, 100, 100, 100, 255);
+	SDL_SetWindowTitle(update.window, to_string(SDL_GetTicks()).append(" MS have passed").c_str());
+
 	SDL_RenderClear(update.renderer);
-	SDL_RenderPresent(update.renderer);
+
+	window = update.window;
 
 
 	for (std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); ++i)
@@ -23,43 +33,41 @@ void Game::update(Events::updateEvent update)
 		(*i)->update(update);
 	}
 
-	// other random code lol
+	getPlayer();
 
+	SDL_SetRenderDrawColor(update.renderer, 10, 10, 10, 255);
+
+	SDL_RenderPresent(update.renderer);
+
+	int delta = SDL_GetTicks() - startTick;
+	gameFPS = 1000 / delta;
+}
+
+
+Player* Game::getPlayer()
+{
+	static Player* p;
 	if (!p)
-	{
-		// if a player doesn't exist, make one
-		p = new Player(0,0);
-	}
-
+		p = new Player(400,250);
+	return p;
 }
 
 
 
-
-void Game::keyDown(SDL_KeyboardEvent event)
+void Game::keyDown(SDL_KeyboardEvent ev)
 {
-	switch (event.keysym.sym)
+	if (controls.count(ev.keysym.sym) == 1)
+		controls[ev.keysym.sym] = true;
+	for (std::vector<Object*>::iterator i = objects.begin(); i != objects.end(); ++i)
 	{
-		case SDLK_w:
-			cout << "pressed w\n";
-		break;
-		case SDLK_s:
-			cout << "pressed s\n";
-			break;
-		case SDLK_d:
-			cout << "pressed d\n";
-			break;
-		case SDLK_a:
-			cout << "pressed a\n";
-			break;
+		(*i)->keyDown(ev);
 	}
-
-
 }
 
-void Game::keyUp(SDL_KeyboardEvent event)
+void Game::keyUp(SDL_KeyboardEvent ev)
 {
-
+	if (controls.count(ev.keysym.sym) == 1)
+		controls[ev.keysym.sym] = false;
 }
 
 void Game::addGlobalObject(Object* obj)
@@ -71,4 +79,11 @@ void Game::removeGlobalObject(Object* obj)
 {
 	// TODO (i'm breaddead)
 
+}
+
+bool Game::getKey(int code)
+{
+	if (controls.count(code) != 1)
+		return false;
+	return controls[code];
 }

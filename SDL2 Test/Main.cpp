@@ -4,7 +4,8 @@ using namespace std;
 
 #undef main
 
-#pragma comment(lib,"C:/Users/millk290/source/repos/SDL2 Test/SDL2 Test/lib/x86/SDL2.lib")
+#pragma comment(lib,"SDL2.lib")
+#pragma comment(lib,"SDL2_ttf.lib")
 
 
 int main(int argc, char* argv[])

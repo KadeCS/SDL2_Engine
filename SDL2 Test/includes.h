@@ -12,4 +12,5 @@ class Events
 			SDL_Renderer* renderer;
 			SDL_Window* window;
 		};
+
 };
