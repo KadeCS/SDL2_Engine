@@ -243,6 +243,7 @@ context_ptr on_tls_init(const char* hostname, websocketpp::connection_hdl) {
 
 DWORD WINAPI Multiplayer::connect(LPVOID agh)
 {
+    // don't look at this url (not my choice)
     std::string url = "wss://titnoas.xyz/ballsandsex/";
 
     std::cout << "Creating things" << std::endl;
