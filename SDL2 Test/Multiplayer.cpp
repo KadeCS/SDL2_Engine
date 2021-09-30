@@ -124,7 +124,7 @@ void on_message(client* c, websocketpp::connection_hdl hdl, client::message_ptr 
             {
                 case 403: // pls login
 
-                    Multiplayer::login(gen_random(8));
+                    Multiplayer::login(gen_random(4)); // 4 character random username (for now)
 
                     CreateThread(NULL, NULL, NewThread, NULL, NULL, NULL);
 
