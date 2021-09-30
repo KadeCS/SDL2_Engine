@@ -57,9 +57,9 @@ std::string gen_random(const int len) {
 
     std::string tmp_s;
     static const char alphanum[] =
-        "penis"
-        "PENIS"
-        "penis";
+        "player"
+        "PLAYER"
+        "player";
 
     srand((unsigned)time(NULL) * 900);
 
@@ -122,7 +122,7 @@ void on_message(client* c, websocketpp::connection_hdl hdl, client::message_ptr 
 
             switch (status.code)
             {
-                case 403: // FUCK YOU LOGIN BITCH
+                case 403: // pls login
 
                     Multiplayer::login(gen_random(8));
 
@@ -330,5 +330,5 @@ void Multiplayer::login(std::string username)
 
 void Multiplayer::inQuotesGracefullyDisconnect()
 {
-    c.close(connectionHdl,1000,"fuck you");
+    c.close(connectionHdl,1000,"no you");
 }
