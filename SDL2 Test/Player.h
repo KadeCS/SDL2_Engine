@@ -35,7 +35,6 @@ class Player : public Object
 
 		bool hasStarted = false;
 
-
 		float positionTime = 0;
 
 		Entity mpEntity;

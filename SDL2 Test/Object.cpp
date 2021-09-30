@@ -43,25 +43,26 @@ void Object::setY(float y)
 	this->y = Utils::clamp(y, 0, yBound);
 }
 
-bool Object::isColiding(Object* obj)
+bool Object::isColiding(Object* obj, float overrideX, float overrideY)
 {
-	int leftA, leftB;
-	int rightA, rightB;
-	int topA, topB;
-	int bottomA, bottomB;
+	float leftA, leftB;
+	float rightA, rightB;
+	float topA, topB;
+	float bottomA, bottomB;
 
 	leftB = obj->x;
 	rightB = obj->x + obj->w;
 	topB = obj->y;
 	bottomB = obj->y + obj->h;
 
-	leftA = x;
-	rightA = x + w;
-	topA = y;
-	bottomA = y + h;
+	leftA = overrideX;
+	rightA = overrideX + this->w;
+	topA = overrideY;
+	bottomA = overrideY + this->h;
 
-	if (bottomA <= topB || topA >= bottomB || rightA <= leftB || leftA >= rightB)
-		return false;
+	std::cout << "checking (" << leftB << "," << rightB << ") vs (" << leftA << "," << rightA << ")" << std::endl;
+
+	
 
 	std::cout << "yes i'm coliding" << std::endl;
 

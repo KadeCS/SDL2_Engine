@@ -25,7 +25,7 @@ class Object
 
 		void die();
 
-		bool isColiding(Object* obj);
+		bool isColiding(Object* obj, float overrideX, float overrideY);
 
 		int type;
 

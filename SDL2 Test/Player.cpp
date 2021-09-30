@@ -1,5 +1,6 @@
 #include "includes.h"
 #include "Game.h"
+#include "Player.h"
 #include "Bullet.h"
 #include "Assets.h";
 #include <cmath>
@@ -25,7 +26,6 @@ Asset* getPlayerAsset()
 	static Asset* as;
 	if (!as)
 		as = Assets::getAsset("player.png", Game::renderer);
-
 	return as;
 }
 
@@ -161,11 +161,15 @@ void Player::update(Events::updateEvent ev)
 
 	SDL_FRect rect;
 
+	Asset* as = getPlayerAsset();
+
 	rect.x = x;
 	rect.y = y;
-	rect.w = getPlayerAsset()->w;
-	rect.h = getPlayerAsset()->h;
+	rect.w = as->w;
+	rect.h = as->h;
 
+	this->w = as->w;
+	this->h = as->h;
 
 	SDL_RenderCopyF(ev.renderer, getPlayerAsset()->texture, NULL, &rect);
 
@@ -191,8 +195,8 @@ void Player::update(Events::updateEvent ev)
 	{
 		SDL_Surface* screen = SDL_GetWindowSurface(ev.window);
 		positionTime += Game::deltaTime / 200;
-		setX(std::lerp(lastX, toX, Utils::clamp(positionTime,0,1)));
-		setY(std::lerp(lastY, toY, Utils::clamp(positionTime,0,1)));
+		setX(Utils::lerp(lastX, toX, Utils::clamp(positionTime, 0, 1)));
+		setY(Utils::lerp(lastY, toY, Utils::clamp(positionTime, 0, 1)));
 	}
 	if (!username)
 	{
@@ -223,36 +227,36 @@ void Player::keyDown(SDL_KeyboardEvent ev)
 	}
 }
 
-void Player::setX(float x)
+bool checkCol(Player* self, int newX, int newY)
 {
-	if (isDead)
-		return;
-
-	// check collision
-
-	if (isLocal)
+	for (int i = 0; i < Game::getGlobalObjects()->size(); i++)
 	{
-		for (int i = 0; i < Game::getGlobalObjects()->size(); i++)
+		Object* obj = (*Game::getGlobalObjects())[i];
+		Player* p = NULL;
+		switch (obj->type)
 		{
-			Object* obj = (*Game::getGlobalObjects())[i];
-			if (obj->isColiding(this) && (obj->type == Player_e || obj->type == Wall_e))
-			{
-				touchingBound = true;
-				return;
-			}
+			case Player_e:
+				p = (Player*)obj;
+				if (p->mpEntity.id != self->mpEntity.id)
+					if (self->isColiding(p, newX, newY))
+					{
+						self->touchingBound = true;
+						return true;
+					}
+				break;
+			case Wall_e:
+				if (self->isColiding(obj, newX, newY))
+				{
+					self->touchingBound = true;
+					return true;
+				}
+				break;
 		}
 	}
-
-	float xBound = SDL_GetWindowSurface(Game::window)->w - 10;
-	float yBound = SDL_GetWindowSurface(Game::window)->h - 10;
-	if (x >= xBound || y >= yBound)
-		touchingBound = true;
-	else
-		touchingBound = false;
-	this->x = Utils::clamp(x, 0, xBound);
+	return false;
 }
 
-void Player::setY(float y)
+void Player::setX(float nx)
 {
 	if (isDead)
 		return;
@@ -260,25 +264,36 @@ void Player::setY(float y)
 	// check collision
 
 	if (isLocal)
-	{
-		for (int i = 0; i < Game::getGlobalObjects()->size(); i++)
-		{
-			Object* obj = (*Game::getGlobalObjects())[i];
-			if (obj->isColiding(this) && (obj->type == Player_e || obj->type == Wall_e))
-			{
-				touchingBound = true;
-				return;
-			}
-		}
-	}
+		if (checkCol(this,nx,this->y))
+			return;
 
 	float xBound = SDL_GetWindowSurface(Game::window)->w - 10;
 	float yBound = SDL_GetWindowSurface(Game::window)->h - 10;
-	if (x >= xBound || y >= yBound)
+	if (nx >= xBound || y >= yBound)
 		touchingBound = true;
 	else
 		touchingBound = false;
-	this->y = Utils::clamp(y, 0, yBound);
+	this->x = Utils::clamp(nx, 0, xBound);
+}
+
+void Player::setY(float ny)
+{
+	if (isDead)
+		return;
+
+	// check collision
+
+	if (isLocal)
+		if (checkCol(this,this->x,ny))
+			return;
+
+	float xBound = SDL_GetWindowSurface(Game::window)->w - 10;
+	float yBound = SDL_GetWindowSurface(Game::window)->h - 10;
+	if (x >= xBound || ny >= yBound)
+		touchingBound = true;
+	else
+		touchingBound = false;
+	this->y = Utils::clamp(ny, 0, yBound);
 }
 
 void Player::onShot(SPacketShootResponse_t ev)
