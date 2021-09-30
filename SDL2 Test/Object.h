@@ -1,17 +1,36 @@
 #pragma once
+#include "includes.h"
+#include "Packets.h"
+
 class Object
 {
 	public:
-		Object(int x, int y);
+		Object(float x, float y);
 		Object() = default;
 		~Object() = default;
+		void create();
 		virtual void update(Events::updateEvent ev) = 0;
 		virtual void keyDown(SDL_KeyboardEvent ev) {};
 
-		int x;
-		int y;
+		float x = 0;
+		float y = 0;
+		float w = 0;
+		float h = 0;
 
-		void setX(int x);
-		void setY(int y);
+		bool isLocal = false;
+
+		bool touchingBound;
+
+		bool isDead = false;
+
+		void die();
+
+		bool isColiding(Object* obj);
+
+		int type;
+
+
+		virtual void setX(float x);
+		virtual void setY(float y);
 };
 

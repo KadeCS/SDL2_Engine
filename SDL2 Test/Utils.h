@@ -1,7 +1,9 @@
 #pragma once
+#include <SDL_ttf.h>
 class Utils
 {
 	public:
-		static int clamp(int n, int lower, int upper);
+		static float clamp(float n, float lower, float upper);
+		static TTF_Font* getFont();
 };
 

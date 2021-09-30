@@ -1,23 +1,78 @@
 #include "includes.h"
-#include "Game.h"
 #include "Object.h"
+
+#include "Game.h"
 #include "Utils.h"
 
-Object::Object(int x, int y)
-{
-	Game::addGlobalObject(this);
 
+Object::Object(float x, float y)
+{
+	touchingBound = false;
 	setX(x);
 	setY(y);
 }
 
-void Object::setX(int x)
+void Object::create()
 {
-	this->x = Utils::clamp(x, 0, SDL_GetWindowSurface(Game::window)->w - 10);
+	Game::addGlobalObject(this);
 }
 
-void Object::setY(int y)
+void Object::setX(float x)
 {
-	this->y = Utils::clamp(y, 0, SDL_GetWindowSurface(Game::window)->h - 10);
+	if (isDead)
+		return;
+	float xBound = SDL_GetWindowSurface(Game::window)->w - 10;
+	float yBound = SDL_GetWindowSurface(Game::window)->h - 10;
+	if (x >= xBound || y >= yBound)
+		touchingBound = true;
+	else
+		touchingBound = false;
+	this->x = Utils::clamp(x, 0, xBound);
+}
+
+void Object::setY(float y)
+{
+	if (isDead)
+		return;
+	float xBound = SDL_GetWindowSurface(Game::window)->w - 10;
+	float yBound = SDL_GetWindowSurface(Game::window)->h - 10;
+	if (x >= xBound || y >= yBound)
+		touchingBound = true;
+	else
+		touchingBound = false;
+	this->y = Utils::clamp(y, 0, yBound);
+}
+
+bool Object::isColiding(Object* obj)
+{
+	int leftA, leftB;
+	int rightA, rightB;
+	int topA, topB;
+	int bottomA, bottomB;
+
+	leftB = obj->x;
+	rightB = obj->x + obj->w;
+	topB = obj->y;
+	bottomB = obj->y + obj->h;
+
+	leftA = x;
+	rightA = x + w;
+	topA = y;
+	bottomA = y + h;
+
+	if (bottomA <= topB || topA >= bottomB || rightA <= leftB || leftA >= rightB)
+		return false;
+
+	std::cout << "yes i'm coliding" << std::endl;
+
+	return true;
+}
+
+void Object::die()
+{
+	isDead = true;
+	Game::removeGlobalObject(this);
+	if (!this)
+		delete this;
 }
 
