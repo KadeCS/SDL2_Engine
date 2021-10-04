@@ -38,6 +38,10 @@ void Player::update(Events::updateEvent ev)
 	if (isDead)
 		return;
 
+	Asset* as = getPlayerAsset();
+	
+
+
 	isLocal = Multiplayer::localId == mpEntity.id;
 
 	if (isLocal)
@@ -62,7 +66,7 @@ void Player::update(Events::updateEvent ev)
 		if (ammo > 6)
 			ammo = 6;
 
-		if (touchingBound)
+		if (touchingBoundY)
 			jumps = 1;
 
 		if (Game::getKey(SDLK_a))
@@ -74,6 +78,8 @@ void Player::update(Events::updateEvent ev)
 		{
 			xAcc = 0.2;
 		}
+
+
 
 		// mouse stuff
 
@@ -136,17 +142,6 @@ void Player::update(Events::updateEvent ev)
 			pressedM = false;
 		}
 
-		if (xAcc > 0)
-			xAcc -= 0.001;
-		if (xAcc < 0)
-			xAcc += 0.001;
-
-		if (xAcc < 0.01 && xAcc > -0.01)
-			xAcc = 0;
-
-		if (xAcc > 0.6)
-			xAcc = 0.6;
-
 		xVel = xAcc;
 
 		if (yVel < 1)
@@ -155,21 +150,20 @@ void Player::update(Events::updateEvent ev)
 		if (yVel > 0.4)
 			yVel = 0.4;
 
+
 		setY(y + yVel);
 		setX(x + xVel);
+
+		if (touchingBoundY)
+			yVel = 0;
+
+		xAcc = 0;
 	}
-
-	SDL_FRect rect;
-
-	Asset* as = getPlayerAsset();
 
 	rect.x = x;
 	rect.y = y;
-	rect.w = as->w;
-	rect.h = as->h;
-
-	this->w = as->w;
-	this->h = as->h;
+	rect.w = *getW(&as->w);
+	rect.h = *getH(&as->h);
 
 	SDL_RenderCopyF(ev.renderer, getPlayerAsset()->texture, NULL, &rect);
 
@@ -200,16 +194,17 @@ void Player::update(Events::updateEvent ev)
 	}
 	if (!username)
 	{
-		username = new TextDisplay(x - 25, y - 25, mpEntity.username, 50, 10);
+		username = new TextDisplay(x + 10, y - 35, mpEntity.username, 25, 25);
 		username->create();
 	}
 
-	username->setX(x - 25);
-	username->setY(y - 25);
+	username->setX(x - 8);
+	username->setY(y - 35);
 
 	if (!hasStarted)
 		hasStarted = true;
 }
+
 
 void Player::keyDown(SDL_KeyboardEvent ev)
 {
@@ -238,16 +233,16 @@ bool checkCol(Player* self, int newX, int newY)
 			case Player_e:
 				p = (Player*)obj;
 				if (p->mpEntity.id != self->mpEntity.id)
-					if (self->isColiding(p, newX, newY))
+					if (self->isColiding(p, self))
 					{
-						self->touchingBound = true;
+						self->touchingBoundY = true;
 						return true;
 					}
 				break;
 			case Wall_e:
-				if (self->isColiding(obj, newX, newY))
+				if (self->isColiding(obj, self))
 				{
-					self->touchingBound = true;
+					self->touchingBoundY = true;
 					return true;
 				}
 				break;
@@ -263,17 +258,31 @@ void Player::setX(float nx)
 
 	// check collision
 
-	if (isLocal)
-		if (checkCol(this,nx,this->y))
-			return;
+	float previousX = x;
 
-	float xBound = SDL_GetWindowSurface(Game::window)->w - 10;
-	float yBound = SDL_GetWindowSurface(Game::window)->h - 10;
-	if (nx >= xBound || y >= yBound)
-		touchingBound = true;
+	int* w = getW(0);
+
+	if (w == nullptr)
+		return;
+
+	float xBound = SDL_GetWindowSurface(Game::window)->w - *w;
+	if (nx >= xBound)
+		touchingBoundX = true;
 	else
-		touchingBound = false;
+		touchingBoundX = false;
 	this->x = Utils::clamp(nx, 0, xBound);
+
+	rect.x = x;
+
+	if (isLocal)
+		if (checkCol(this, nx, this->y))
+		{
+			this->x = previousX;
+			touchingBoundX = true;
+			rect.x = x;
+			return;
+		}
+
 }
 
 void Player::setY(float ny)
@@ -283,17 +292,30 @@ void Player::setY(float ny)
 
 	// check collision
 
-	if (isLocal)
-		if (checkCol(this,this->x,ny))
-			return;
+	float previousY = y;
 
-	float xBound = SDL_GetWindowSurface(Game::window)->w - 10;
-	float yBound = SDL_GetWindowSurface(Game::window)->h - 10;
-	if (x >= xBound || ny >= yBound)
-		touchingBound = true;
+	int* h = getH(0);
+
+	if (h == nullptr)
+		return;
+
+	float yBound = SDL_GetWindowSurface(Game::window)->h - *h;
+	if (ny >= yBound)
+		touchingBoundY = true;
 	else
-		touchingBound = false;
+		touchingBoundY = false;
 	this->y = Utils::clamp(ny, 0, yBound);
+
+	rect.y = y;
+
+	if (isLocal)
+		if (checkCol(this, ny, this->y))
+		{
+			this->y = previousY;
+			touchingBoundY = true;
+			rect.y = y;
+			return;
+		}
 }
 
 void Player::onShot(SPacketShootResponse_t ev)

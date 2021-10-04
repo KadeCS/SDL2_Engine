@@ -7,7 +7,8 @@
 
 Object::Object(float x, float y)
 {
-	touchingBound = false;
+	touchingBoundX = false;
+	touchingBoundY = false;
 	setX(x);
 	setY(y);
 }
@@ -22,11 +23,10 @@ void Object::setX(float x)
 	if (isDead)
 		return;
 	float xBound = SDL_GetWindowSurface(Game::window)->w - 10;
-	float yBound = SDL_GetWindowSurface(Game::window)->h - 10;
-	if (x >= xBound || y >= yBound)
-		touchingBound = true;
+	if (x >= xBound)
+		touchingBoundX = true;
 	else
-		touchingBound = false;
+		touchingBoundX = false;
 	this->x = Utils::clamp(x, 0, xBound);
 }
 
@@ -34,39 +34,40 @@ void Object::setY(float y)
 {
 	if (isDead)
 		return;
-	float xBound = SDL_GetWindowSurface(Game::window)->w - 10;
-	float yBound = SDL_GetWindowSurface(Game::window)->h - 10;
-	if (x >= xBound || y >= yBound)
-		touchingBound = true;
+	float yBound = SDL_GetWindowSurface(Game::window)->w - 10;
+	if (y >= yBound)
+		touchingBoundY = true;
 	else
-		touchingBound = false;
+		touchingBoundY = false;
 	this->y = Utils::clamp(y, 0, yBound);
 }
 
-bool Object::isColiding(Object* obj, float overrideX, float overrideY)
+bool Object::isColiding(Object* obj, Object* self)
 {
-	float leftA, leftB;
-	float rightA, rightB;
-	float topA, topB;
-	float bottomA, bottomB;
+	if (obj->type == Player_e)
+	{
+		Player* p = (Player*)obj;
+		Player* pSelf = (Player*)self;
 
-	leftB = obj->x;
-	rightB = obj->x + obj->w;
-	topB = obj->y;
-	bottomB = obj->y + obj->h;
+		SDL_Rect rec;
 
-	leftA = overrideX;
-	rightA = overrideX + this->w;
-	topA = overrideY;
-	bottomA = overrideY + this->h;
+		rec.x = (int) p->rect.x;
+		rec.y = (int) p->rect.y;
+		rec.w = p->rect.w;
+		rec.h = p->rect.h;
 
-	std::cout << "checking (" << leftB << "," << rightB << ") vs (" << leftA << "," << rightA << ")" << std::endl;
+		SDL_Rect recS;
 
-	
+		recS.x = (int)pSelf->rect.x;
+		recS.y = (int)pSelf->rect.y;
+		recS.w = pSelf->rect.w;
+		recS.h = pSelf->rect.h;
 
-	std::cout << "yes i'm coliding" << std::endl;
+		if (SDL_HasIntersection(&rec,&recS))
+			return true;
+	}
 
-	return true;
+	return false;
 }
 
 void Object::die()
@@ -77,3 +78,18 @@ void Object::die()
 		delete this;
 }
 
+int* Object::getW(int* defaultW)
+{
+	static int* w;
+	if (!w)
+		w = defaultW;
+	return w;
+}
+
+int* Object::getH(int* defaultH)
+{
+	static int* h;
+	if (!h)
+		h = defaultH;
+	return h;
+}

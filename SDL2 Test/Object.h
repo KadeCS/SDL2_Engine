@@ -14,18 +14,19 @@ class Object
 
 		float x = 0;
 		float y = 0;
-		float w = 0;
-		float h = 0;
+		virtual int* getW(int* defaultW);
+		virtual int* getH(int* defaultH);
 
 		bool isLocal = false;
 
-		bool touchingBound;
+		bool touchingBoundX;
+		bool touchingBoundY;
 
 		bool isDead = false;
 
 		void die();
 
-		bool isColiding(Object* obj, float overrideX, float overrideY);
+		bool isColiding(Object* obj, Object* self);
 
 		int type;
 

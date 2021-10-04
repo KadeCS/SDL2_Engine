@@ -17,6 +17,8 @@ class Player : public Object
 
 		void onShot(SPacketShootResponse_t ev);
 
+		SDL_FRect rect;
+
 		float yVel = 0;
 		float xVel = 0;
 		float xAcc = 0;

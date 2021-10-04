@@ -22,7 +22,7 @@ int main(int argc, char* argv[])
 
 	SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED);
 
-	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "linear");
+	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 
 	Game* game = new Game();
 
@@ -81,6 +81,8 @@ int main(int argc, char* argv[])
 		Game::gameFPS = numFrames / (totalTime / 1000.0);
 
 		Game::deltaTime = endTime - startTime;
+
+		
 	}
 
 	SDL_DestroyRenderer(renderer);
