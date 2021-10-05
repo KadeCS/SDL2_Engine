@@ -86,6 +86,12 @@ int main(int argc, char* argv[])
 		Game::deltaTime = endTime - startTime;
 
 		
+		if (SDL_GetTicks() % 1000 == 0)
+		{
+			numFrames = 0;
+			totalTime = 0;
+		}
+
 	}
 
 

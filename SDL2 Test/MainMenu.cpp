@@ -10,7 +10,7 @@ TextBox* textBox;
 
 MainMenu::MainMenu()
 {
-	textBox = new TextBox(300, 300, "", 100, 50);
+	textBox = new TextBox(300, 300, "", 100, 30);
 	textBox->create();
 	textBox->isFocused = true;
 
