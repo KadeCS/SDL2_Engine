@@ -44,7 +44,7 @@ void Player::update(Events::updateEvent ev)
 
 	isLocal = Multiplayer::localId == mpEntity.id;
 
-	if (isLocal)
+	if (isLocal && SDL_GetTicks() % 2 == 0)
 	{
 
 		if (reloading)
@@ -198,7 +198,7 @@ void Player::update(Events::updateEvent ev)
 		username->create();
 	}
 
-	username->setX(x - 8);
+	username->setX(x - (username->rW / 4));
 	username->setY(y - 35);
 
 	if (!hasStarted)

@@ -11,6 +11,7 @@ class Object
 		void create();
 		virtual void update(Events::updateEvent ev) = 0;
 		virtual void keyDown(SDL_KeyboardEvent ev) {};
+		virtual void textInput(SDL_TextInputEvent ev) {};
 
 		float x = 0;
 		float y = 0;

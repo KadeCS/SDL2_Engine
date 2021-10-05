@@ -3,6 +3,7 @@
 #include "Object.h"
 #include "TextDisplay.h"
 #include <map>
+#include "Menu.h"
 
 class Game
 {
@@ -10,23 +11,21 @@ class Game
 
 		void createGame();
 
-		static TextDisplay* getHud();
-
 		void update(Events::updateEvent updateEvent);
 		void keyDown(SDL_KeyboardEvent event);
 		void keyUp(SDL_KeyboardEvent event);
 
-		static void onLoggedIn();
-		static void onUpdateGameState();
+		void textInput(SDL_TextInputEvent event);
 
-		static Player* getLocalPlayer();
-		static Entity findEntityById(unsigned int);
-		static Player* findPlayerById(unsigned int);
-		static Player* createPlayer(Entity en);
+
+		static Menu* currentMenu;
+
 		static std::vector<Object*>* getGlobalObjects();
 		static void addGlobalObject(Object* obj);
 		static void removeGlobalObject(Object* obj);
 		static std::map<int, bool> controls;
+
+		static bool containsObject(unsigned int id);
 
 		static bool getKey(int code);
 

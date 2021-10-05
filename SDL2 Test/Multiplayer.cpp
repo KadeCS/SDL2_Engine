@@ -1,6 +1,7 @@
 #include "Multiplayer.h"
 #include "Game.h"
 #include "Bullet.h"
+#include "Gameplay.h"
 
 typedef websocketpp::client<websocketpp::config::asio_tls_client> client;
 typedef websocketpp::lib::shared_ptr<websocketpp::lib::asio::ssl::context> context_ptr;
@@ -13,6 +14,8 @@ client c;
 websocketpp::connection_hdl connectionHdl;
 
 long Multiplayer::localId;
+
+bool Multiplayer::awaitingLogin = false;
 
 std::vector<Entity> Multiplayer::entites = {};
 
@@ -124,7 +127,7 @@ void on_message(client* c, websocketpp::connection_hdl hdl, client::message_ptr 
             {
                 case 403: // pls login
 
-                    Multiplayer::login(gen_random(4)); // 4 character random username (for now)
+                    Multiplayer::awaitingLogin = true;
 
                     CreateThread(NULL, NULL, NewThread, NULL, NULL, NULL);
 
@@ -164,7 +167,7 @@ void on_message(client* c, websocketpp::connection_hdl hdl, client::message_ptr 
 
             Multiplayer::setEntites(helloServer.Entities);
 
-            Game::onLoggedIn();
+            Gameplay::onLoggedIn();
             break;
         case SPacketUpdateGameState:
             unpack(result, data, length);
@@ -177,7 +180,7 @@ void on_message(client* c, websocketpp::connection_hdl hdl, client::message_ptr 
 
             Multiplayer::setEntites(gameState.Entities);
 
-            Game::onUpdateGameState();
+            Gameplay::onUpdateGameState();
 
             break;
         case SPacketShootResponse:
@@ -191,7 +194,7 @@ void on_message(client* c, websocketpp::connection_hdl hdl, client::message_ptr 
 
             Multiplayer::setEntites(shoot.Entities);
 
-            Entity en = Game::findEntityById(shoot.id);
+            Entity en = Gameplay::findEntityById(shoot.id);
 
             Bullet* b = new Bullet(en.position.x,en.position.y);
             b->mpEntity = en;
@@ -203,7 +206,7 @@ void on_message(client* c, websocketpp::connection_hdl hdl, client::message_ptr 
 
             std::cout << "created bullet from server " << shoot.id << std::endl;
 
-            Game::getLocalPlayer()->onShot(shoot);
+            Gameplay::getLocalPlayer()->onShot(shoot);
 
             break;
     }
@@ -243,6 +246,7 @@ context_ptr on_tls_init(const char* hostname, websocketpp::connection_hdl) {
 
 DWORD WINAPI Multiplayer::connect(LPVOID agh)
 {
+    awaitingLogin = false;
     // don't look at this url (not my choice)
     std::string url = "wss://titnoas.xyz/ballsandsex/";
 
@@ -290,7 +294,7 @@ DWORD WINAPI Multiplayer::connect(LPVOID agh)
             std::cout << "done run" << std::endl;
 
             if (Multiplayer::loggedIn)
-                Multiplayer::login(Game::getLocalPlayer()->mpEntity.username);
+                Multiplayer::login(Gameplay::getLocalPlayer()->mpEntity.username);
         }
     }
     catch (websocketpp::exception const& e) {

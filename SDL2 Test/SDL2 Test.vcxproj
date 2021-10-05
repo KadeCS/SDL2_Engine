@@ -139,10 +139,14 @@
     <ClCompile Include="Assets.cpp" />
     <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Gameplay.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="MainMenu.cpp" />
+    <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Multiplayer.cpp" />
     <ClCompile Include="Object.cpp" />
     <ClCompile Include="Player.cpp" />
+    <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="TextDisplay.cpp" />
     <ClCompile Include="Utils.cpp" />
   </ItemGroup>
@@ -150,11 +154,15 @@
     <ClInclude Include="Assets.h" />
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Gameplay.h" />
     <ClInclude Include="includes.h" />
+    <ClInclude Include="MainMenu.h" />
+    <ClInclude Include="Menu.h" />
     <ClInclude Include="Multiplayer.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Packets.h" />
     <ClInclude Include="Player.h" />
+    <ClInclude Include="TextBox.h" />
     <ClInclude Include="TextDisplay.h" />
     <ClInclude Include="Utils.h" />
   </ItemGroup>

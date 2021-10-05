@@ -54,6 +54,9 @@ int main(int argc, char* argv[])
 			case SDL_KEYUP:
 				game->keyUp(event.key);
 				break;
+			case SDL_TEXTINPUT:
+				game->textInput(event.text);
+				break;
 			}
 
 		}
@@ -84,6 +87,9 @@ int main(int argc, char* argv[])
 
 		
 	}
+
+
+	SDL_StopTextInput();
 
 	SDL_DestroyRenderer(renderer);
 

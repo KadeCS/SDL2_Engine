@@ -37,6 +37,8 @@ class Multiplayer
 
 		static std::string username;
 
+		static bool awaitingLogin;
+
 		static void inQuotesGracefullyDisconnect();
 
 		static std::vector<Entity> entites;

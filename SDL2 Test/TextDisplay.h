@@ -2,6 +2,13 @@
 #include "Object.h"
 #include "includes.h"
 #include "Packets.h"
+
+struct Color {
+	unsigned char r;
+	unsigned char g;
+	unsigned char b;
+};
+
 class TextDisplay : public Object
 {
 	public:
@@ -16,10 +23,14 @@ class TextDisplay : public Object
 			this->rW = w;
 			this->rH = h;
 			this->type = Misc_e;
+
+			color = { 255,255,255 };
 		};
 		TextDisplay() = default;
 		~TextDisplay() = default;
 		void update(Events::updateEvent event) override;
+
+		Color color;
 
 		std::string* text;
 		int w;
