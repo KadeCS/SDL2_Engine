@@ -5,7 +5,10 @@
 class Bullet : public Object
 {
 	public:
-		Bullet(float x, float y) : Object(x, y) {};
+		Bullet(float x, float y) : Object(x, y) {
+		
+			type = Bullet_e;
+		};
 		Bullet() = default;
 		~Bullet() = default;
 		void update(Events::updateEvent event) override;

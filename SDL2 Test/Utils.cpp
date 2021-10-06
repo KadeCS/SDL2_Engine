@@ -1,4 +1,5 @@
 #include "Utils.h"
+#include <complex>
 
 
 float Utils::clamp(float n, float lower, float upper)
@@ -21,6 +22,11 @@ float Utils::lerp(float __a, float __b, float __t) // stolen from cmath cuz I do
 	return __t > 1 == __b > __a
 		? (__b < __x ? __x : __b)
 		: (__b > __x ? __x : __b);
+}
+
+float Utils::Align(float value, float size)
+{
+	return value - std::abs(std::fmod(value, size));
 }
 
 

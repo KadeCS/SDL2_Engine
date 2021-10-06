@@ -31,6 +31,7 @@ Asset* getPlayerAsset()
 
 Player::Player(float x, float y) : Object(x, y)
 {
+	type = Player_e;
 }
 
 void Player::update(Events::updateEvent ev)

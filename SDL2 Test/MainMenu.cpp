@@ -3,7 +3,7 @@
 #include "Multiplayer.h"
 #include "Game.h"
 #include "Gameplay.h"
-
+#include "LevelEditor.h"
 bool accepted = false;
 
 TextBox* textBox;
@@ -33,5 +33,12 @@ void MainMenu::keyDown(SDL_KeyboardEvent event)
 			textBox->die();
 			delete this;
 		}
+	}
+
+	if (event.keysym.sym == SDLK_F1)
+	{
+		Game::currentMenu = new LevelEditor();
+		textBox->die();
+		delete this;
 	}
 }

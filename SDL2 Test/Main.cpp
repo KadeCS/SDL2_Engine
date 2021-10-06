@@ -24,6 +24,8 @@ int main(int argc, char* argv[])
 
 	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1");
 
+	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
+
 	Game* game = new Game();
 
 	SDL_StartTextInput();

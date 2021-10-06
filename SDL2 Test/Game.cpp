@@ -1,7 +1,6 @@
 #include "includes.h"
 #include <algorithm>
 #include "Multiplayer.h"
-#include <Windows.h>
 
 #include "Game.h"
 #include "Bullet.h"
@@ -102,6 +101,8 @@ void Game::keyUp(SDL_KeyboardEvent ev)
 {
 	if (controls.count(ev.keysym.sym) == 1)
 		controls[ev.keysym.sym] = false;
+
+	currentMenu->keyUp(ev);
 }
 
 std::vector<Object*>* Game::getGlobalObjects()
