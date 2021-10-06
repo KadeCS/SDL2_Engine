@@ -2,7 +2,7 @@
 #include "Game.h"
 #include "Player.h"
 #include "Bullet.h"
-#include "Assets.h";
+#include "Assets.h"
 #include <cmath>
 #include "Utils.h"
 #include <iostream>
@@ -40,8 +40,6 @@ void Player::update(Events::updateEvent ev)
 		return;
 
 	Asset* as = getPlayerAsset();
-	
-
 
 	isLocal = Multiplayer::localId == mpEntity.id;
 
@@ -146,10 +144,10 @@ void Player::update(Events::updateEvent ev)
 		xVel = xAcc;
 
 		if (yVel < 1)
-			yVel += 0.001;
+			yVel += 0.002;
 
-		if (yVel > 0.4)
-			yVel = 0.4;
+		if (yVel > 1)
+			yVel = 1;
 
 
 		setY(y + yVel);
@@ -212,7 +210,7 @@ void Player::keyDown(SDL_KeyboardEvent ev)
 	if (Game::getKey(SDLK_w) && isLocal && jumps > 0)
 	{
 		jumps--;
-		yVel = -0.3;
+		yVel = -0.5;
 	}
 
 	if (Game::getKey(SDLK_r) && isLocal && !reloading)
@@ -328,8 +326,8 @@ void Player::onShot(SPacketShootResponse_t ev)
 	float dist = sqrt(pow(ev.MousePosition.x - x, 2) + pow(ev.MousePosition.y - y, 2));
 	float len = sqrt(pow(deltaX, 2) + pow(deltaY, 2));
 
-	if (dist > 0.6)
-		dist = 0.6;
+	if (dist > 1)
+		dist = 1;
 
 	float v1 = deltaX / len;
 	float v2 = deltaY / len;

@@ -1,7 +1,6 @@
 #pragma once
 #include "Player.h"
 #include "Object.h"
-#include "TextDisplay.h"
 #include <map>
 #include "Menu.h"
 

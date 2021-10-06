@@ -25,12 +25,20 @@ class TextDisplay : public Object
 			this->type = Misc_e;
 
 			color = { 255,255,255 };
+
+			setText(temp);
 		};
+
+
 		TextDisplay() = default;
 		~TextDisplay() = default;
 		void update(Events::updateEvent event) override;
 
 		Color color;
+
+		SDL_Surface* surfaceMessage;
+		SDL_Texture* message;
+		SDL_Rect message_Rect;
 
 		std::string* text;
 		int w;

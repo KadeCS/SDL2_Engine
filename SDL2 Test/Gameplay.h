@@ -3,6 +3,8 @@
 #include "Game.h"
 #include "Player.h"
 #include "Bullet.h"
+#include "Level.h"
+#include "Wall.h"
 class Gameplay :
     public Menu
 {
@@ -13,7 +15,11 @@ class Gameplay :
 		static TextDisplay* getHud();
 
 		static void onLoggedIn();
+		void reloadLevel();
+
 		static void onUpdateGameState();
+
+		Level* currentLevel;
 
 		static Player* getLocalPlayer();
 		static Entity findEntityById(unsigned int);

@@ -8,6 +8,7 @@ class Object
 		Object(float x, float y);
 		Object() = default;
 		~Object() = default;
+		bool isCreated;
 		void create();
 		virtual void update(Events::updateEvent ev) = 0;
 		virtual void keyDown(SDL_KeyboardEvent ev) {};

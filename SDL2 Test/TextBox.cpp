@@ -14,8 +14,12 @@ void TextBox::update(Events::updateEvent event)
 
 	SDL_Surface* screen = SDL_GetWindowSurface(event.window);
 
+	std::string display = *text;
+
+	display.append((isFocused ? "_" : ""));
+
 	SDL_Surface* surfaceMessage =
-		TTF_RenderText_Blended_Wrapped(Utils::getFont(), text->c_str(), { color.r, color.g,color.b }, screen->w);
+		TTF_RenderText_Blended_Wrapped(Utils::getFont(), display.c_str(), { color.r, color.g,color.b }, screen->w);
 
 	SDL_Texture* message = SDL_CreateTextureFromSurface(event.renderer, surfaceMessage);
 
@@ -30,6 +34,37 @@ void TextBox::update(Events::updateEvent event)
 	message_Rect.y = y;
 	message_Rect.w = rW;
 	message_Rect.h = rH;
+
+
+	int m_x, m_y;
+
+	Uint32 buttons;
+
+	SDL_PumpEvents();
+
+	buttons = SDL_GetMouseState(&m_x, &m_y);
+
+	if ((buttons & SDL_BUTTON_LMASK) != 0)
+	{
+		SDL_Rect colOne;
+
+		colOne.x = m_x;
+		colOne.y = m_y;
+		colOne.w = 10;
+		colOne.h = 10;
+
+		SDL_Rect colTwo;
+
+		colTwo.x = rect.x;
+		colTwo.y = rect.y;
+		colTwo.w = rect.w;
+		colTwo.h = rect.h;
+
+		if (SDL_HasIntersection(&colOne, &colTwo))
+			isFocused = true;
+		else
+			isFocused = false;
+	}
 
 	SDL_SetRenderTarget(event.renderer, NULL);
 

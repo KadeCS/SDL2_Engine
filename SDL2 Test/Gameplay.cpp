@@ -3,11 +3,23 @@
 std::vector<Player*>* entitiesToRemove;
 std::vector<Bullet*>* bulletsToRemove;
 
+void Gameplay::reloadLevel()
+{
+	for (int i = 0; i < currentLevel->savedObjects->size(); i++)
+	{
+		Wall* w = (Wall*)(*currentLevel->savedObjects)[i];
+		w->create();
+	}
+}
+
 
 Gameplay::Gameplay()
 {
 	entitiesToRemove = new std::vector<Player*>();
 	bulletsToRemove = new std::vector<Bullet*>();
+
+	currentLevel = Level::LoadLevel("lvl.level");
+	reloadLevel();
 }
 
 bool containsEntity(unsigned int id)

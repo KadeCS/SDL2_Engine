@@ -3,6 +3,7 @@
 
 #include "Game.h"
 #include "Utils.h"
+#include "Wall.h"
 
 
 Object::Object(float x, float y)
@@ -11,11 +12,13 @@ Object::Object(float x, float y)
 	touchingBoundY = false;
 	setX(x);
 	setY(y);
+	isCreated = false;
 }
 
 void Object::create()
 {
 	Game::addGlobalObject(this);
+	isCreated = true;
 }
 
 void Object::setX(float x)
@@ -66,6 +69,28 @@ bool Object::isColiding(Object* obj, Object* self)
 		if (SDL_HasIntersection(&rec,&recS))
 			return true;
 	}
+	else if (obj->type == Wall_e)
+	{
+		Player* pSelf = (Player*)self;
+		Wall* w = (Wall*)obj;
+
+		SDL_Rect rec;
+
+		rec.x = (int)w->rect.x;
+		rec.y = (int)w->rect.y;
+		rec.w = w->rect.w;
+		rec.h = w->rect.h;
+
+		SDL_Rect recS;
+
+		recS.x = (int)pSelf->rect.x;
+		recS.y = (int)pSelf->rect.y;
+		recS.w = pSelf->rect.w;
+		recS.h = pSelf->rect.h;
+
+		if (SDL_HasIntersection(&rec, &recS))
+			return true;
+	}
 
 	return false;
 }
@@ -73,7 +98,8 @@ bool Object::isColiding(Object* obj, Object* self)
 void Object::die()
 {
 	isDead = true;
-	Game::removeGlobalObject(this);
+	if (isCreated)
+		Game::removeGlobalObject(this);
 	if (!this)
 		delete this;
 }

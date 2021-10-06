@@ -10,12 +10,16 @@ class LevelEditor :
         LevelEditor() {
             vectorOfWall = new std::vector<Wall*>();
         };
+
+
+
         void update(Events::updateEvent event) override;
 
         void keyDown(SDL_KeyboardEvent event) override;
         void keyUp(SDL_KeyboardEvent event) override;
 
         void saveLevel();
+		void loadLevel();
 
         static TextDisplay* getHud();
 

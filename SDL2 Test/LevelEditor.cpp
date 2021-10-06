@@ -3,6 +3,7 @@
 #include <windows.h>
 #include "json.hpp"
 #include <fstream>
+#include "Level.h"
 
 bool LevelEditor::pressedM;
 
@@ -112,6 +113,35 @@ void LevelEditor::saveLevel()
 	level.close();
 }
 
+Level* currentLoaded = nullptr;
+
+void LevelEditor::loadLevel()
+{
+	if (currentLoaded != nullptr)
+	{
+		currentLoaded->clean();
+		delete currentLoaded;
+	}
+
+	currentLoaded = Level::LoadLevel("lvl.level");
+
+	for (int i = 0; i < vectorOfWall->size(); i++)
+	{
+		Wall* w = (*vectorOfWall)[i];
+		w->die();
+		vectorOfWall->erase(std::remove(vectorOfWall->begin(), vectorOfWall->end(), w), vectorOfWall->end());
+		delete w;
+	}
+
+	for (int i = 0; i < currentLoaded->savedObjects->size(); i++)
+	{
+		Wall* w = (Wall*)(*currentLoaded->savedObjects)[i];
+		w->create();
+
+		vectorOfWall->push_back(w);
+	}
+}
+
 void LevelEditor::keyDown(SDL_KeyboardEvent event)
 {
 	switch (event.keysym.sym)
@@ -122,6 +152,9 @@ void LevelEditor::keyDown(SDL_KeyboardEvent event)
 		case SDLK_s:
 			saveLevel();
 			MessageBoxA(NULL, "Saved to lvl.level", "Game Engine", NULL);
+			break;
+		case SDLK_l:
+			loadLevel();
 			break;
 	}
 }
