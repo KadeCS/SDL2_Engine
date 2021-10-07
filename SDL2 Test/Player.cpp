@@ -17,6 +17,8 @@ int reloadingTimer = 0;
 
 float xAcc = 0;
 
+bool shot = false;
+
 Entity mpEntity;
 
 int jumps = 1;
@@ -32,6 +34,7 @@ Asset* getPlayerAsset()
 Player::Player(float x, float y) : Object(x, y)
 {
 	type = Player_e;
+	touchingPlayer = false;
 }
 
 void Player::update(Events::updateEvent ev)
@@ -68,16 +71,16 @@ void Player::update(Events::updateEvent ev)
 		if (touchingBoundY)
 			jumps = 1;
 
-		if (Game::getKey(SDLK_a))
-		{
-			xAcc = -0.2;
-		}
 
-		if (Game::getKey(SDLK_d))
-		{
-			xAcc = 0.2;
-		}
+			if (Game::getKey(SDLK_a))
+			{
+				xAcc = -0.2;
+			}
 
+			if (Game::getKey(SDLK_d))
+			{
+				xAcc = 0.2;
+			}
 
 
 		// mouse stuff
@@ -92,6 +95,7 @@ void Player::update(Events::updateEvent ev)
 
 		if ((buttons & SDL_BUTTON_LMASK) != 0 && !pressedM && ammo > 0) {
 			// pressed lmb
+
 
 			reloading = false;
 
@@ -149,14 +153,18 @@ void Player::update(Events::updateEvent ev)
 		if (yVel > 1)
 			yVel = 1;
 
+		if (xVel > 0.1)
+			xVel -= 0.02;
+		else if (xVel < -0.1)
+			xVel += 0.02;
+		if (xVel < 0.1 && xVel > -0.1)
+			xVel = 0;
 
 		setY(y + yVel);
 		setX(x + xVel);
 
 		if (touchingBoundY)
 			yVel = 0;
-
-		xAcc = 0;
 	}
 
 	rect.x = x;
@@ -207,7 +215,7 @@ void Player::update(Events::updateEvent ev)
 
 void Player::keyDown(SDL_KeyboardEvent ev)
 {
-	if (Game::getKey(SDLK_w) && isLocal && jumps > 0)
+	if (Game::getKey(SDLK_w) && isLocal && jumps > 0 && (touchingBoundX && touchingPlayer || touchingBoundY && !touchingPlayer))
 	{
 		jumps--;
 		yVel = -0.5;
@@ -234,14 +242,15 @@ bool checkCol(Player* self, int newX, int newY)
 				if (p->mpEntity.id != self->mpEntity.id)
 					if (self->isColiding(p, self))
 					{
-						self->touchingBoundY = true;
+						self->touchingPlayer = true;
 						return true;
 					}
+					else
+						self->touchingPlayer = false;
 				break;
 			case Wall_e:
 				if (self->isColiding(obj, self))
 				{
-					self->touchingBoundY = true;
 					return true;
 				}
 				break;

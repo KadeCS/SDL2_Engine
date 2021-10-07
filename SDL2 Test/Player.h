@@ -37,6 +37,8 @@ class Player : public Object
 
 		bool hasStarted = false;
 
+		bool touchingPlayer;
+
 		float positionTime = 0;
 
 		Entity mpEntity;
