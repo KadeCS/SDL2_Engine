@@ -7,6 +7,8 @@
 #include "Utils.h"
 #include <iostream>
 
+#include <math.h>
+
 #define GRAVITY = 0.4
 
 bool pressedM = false;
@@ -153,18 +155,21 @@ void Player::update(Events::updateEvent ev)
 		if (yVel > 1)
 			yVel = 1;
 
-		if (xVel > 0.1)
-			xVel -= 0.02;
-		else if (xVel < -0.1)
-			xVel += 0.02;
-		if (xVel < 0.1 && xVel > -0.1)
-			xVel = 0;
-
 		setY(y + yVel);
 		setX(x + xVel);
 
 		if (touchingBoundY)
 			yVel = 0;
+
+		if (xAcc > 0.1)
+			xAcc -= 0.002;
+		else if (xAcc < -0.1)
+			xAcc += 0.002;
+
+		double rounded = std::ceil(xAcc * 100.0) / 100.0;
+
+		if (abs(rounded) <= 0.1 )
+			xAcc = 0;
 	}
 
 	rect.x = x;
@@ -335,30 +340,25 @@ void Player::onShot(SPacketShootResponse_t ev)
 	float dist = sqrt(pow(ev.MousePosition.x - x, 2) + pow(ev.MousePosition.y - y, 2));
 	float len = sqrt(pow(deltaX, 2) + pow(deltaY, 2));
 
+
 	if (dist > 1)
 		dist = 1;
 
-	float v1 = deltaX / len;
-	float v2 = deltaY / len;
+	float angle = std::atan2(y - ev.MousePosition.y, x - ev.MousePosition.x) * 180 / M_PI;
+
+	// make values small
 
 
-	if (deltaX < 0)
-	{
-		xAcc = dist;
-	}
-	else
-	{
-		xAcc = -dist;
-	}
+	deltaX = Utils::clamp(deltaX * 0.004,0.4,1);
+	deltaY = Utils::clamp(deltaY * 0.004, 0.4, 1);
 
-	if (deltaY < 0)
-	{
-		yVel = dist;
-	}
-	else
-	{
-		yVel = -dist;
-	}
+	deltaX = -deltaX;
+	deltaY = -deltaY;
+
+	xAcc = deltaX;
+	yVel = deltaY;
+
+	std::cout << deltaX << "," << xAcc << "," << yVel << ", LEN " << len << ", ANGLE: " << angle << std::endl;
 
 	ammo--;
 }
