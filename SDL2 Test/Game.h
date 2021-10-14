@@ -30,6 +30,7 @@ class Game
 
 		static SDL_Renderer* renderer;
 		static SDL_Window* window;
+		static float startTick;
 		static double gameFPS;
 		static float deltaTime;
 };

@@ -28,6 +28,7 @@ double Game::gameFPS = 0.0;
 
 float Game::deltaTime = 0;
 
+float Game::startTick = 0;
 
 
 void Game::createGame()
@@ -76,10 +77,6 @@ void Game::update(Events::updateEvent update)
 		}
 	}
 
-
-	SDL_SetRenderDrawColor(update.renderer, 10, 10, 10, 255);
-
-	SDL_RenderPresent(update.renderer);
 }
 
 void Game::keyDown(SDL_KeyboardEvent ev)

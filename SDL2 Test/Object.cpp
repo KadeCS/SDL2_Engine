@@ -8,6 +8,8 @@
 
 Object::Object(float x, float y)
 {
+	touchingBoundNegX = false;
+	touchingBoundNegY = false;
 	touchingBoundX = false;
 	touchingBoundY = false;
 	setX(x);
@@ -68,6 +70,10 @@ bool Object::isColiding(Object* obj, Object* self)
 
 		if (SDL_HasIntersection(&rec,&recS))
 			return true;
+		recS.x += 1;
+		recS.y += 1;
+		if (SDL_HasIntersection(&rec, &recS))
+			return true;
 	}
 	else if (obj->type == Wall_e)
 	{
@@ -90,6 +96,16 @@ bool Object::isColiding(Object* obj, Object* self)
 
 		if (SDL_HasIntersection(&rec, &recS))
 			return true;
+		recS.x += 1;
+		if (SDL_HasIntersection(&rec, &recS))
+		{
+			self->touchingBoundX = true;
+		}
+		recS.y += 1;
+		if (SDL_HasIntersection(&rec, &recS))
+		{
+			self->touchingBoundY = true;
+		}
 	}
 
 	return false;

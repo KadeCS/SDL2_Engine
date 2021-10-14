@@ -23,6 +23,7 @@ bool shot = false;
 
 Entity mpEntity;
 
+int framesJumped = 0;
 int jumps = 1;
 
 Asset* getPlayerAsset()
@@ -37,6 +38,8 @@ Player::Player(float x, float y) : Object(x, y)
 {
 	type = Player_e;
 	touchingPlayer = false;
+	touchingBoundY = false;
+	touchingBoundX = false;
 }
 
 void Player::update(Events::updateEvent ev)
@@ -48,7 +51,7 @@ void Player::update(Events::updateEvent ev)
 
 	isLocal = Multiplayer::localId == mpEntity.id;
 
-	if (isLocal && SDL_GetTicks() % 2 == 0)
+	if (isLocal)
 	{
 
 		if (reloading)
@@ -71,27 +74,19 @@ void Player::update(Events::updateEvent ev)
 			ammo = 6;
 
 		if (touchingBoundY)
-			jumps = 1;
+			jumps = 2;
 
 
-			if (Game::getKey(SDLK_a))
-			{
-				xAcc = -0.2;
-			}
-
-			if (Game::getKey(SDLK_d))
-			{
-				xAcc = 0.2;
-			}
-
+		if (Game::getKey(SDLK_a))
+			xAcc = -2;
+		if (Game::getKey(SDLK_d))
+			xAcc = 2;
 
 		// mouse stuff
 
 		int m_x, m_y;
 
 		Uint32 buttons;
-
-		SDL_PumpEvents();
 
 		buttons = SDL_GetMouseState(&m_x, &m_y);
 
@@ -149,22 +144,31 @@ void Player::update(Events::updateEvent ev)
 
 		xVel = xAcc;
 
-		if (yVel < 1)
-			yVel += 0.002;
 
-		if (yVel > 1)
-			yVel = 1;
 
-		setY(y + yVel);
-		setX(x + xVel);
+		float time = ((SDL_GetTicks() - Game::startTick));
+
+
+		setY((y + yVel));
+		setX((x + xVel));
+
+
+		if (framesJumped < 5)
+			framesJumped++;
+
+		if (yVel < 1 && framesJumped >= 5)
+			yVel += 1.4;
+
+		if (yVel > 4)
+			yVel = 4;
 
 		if (touchingBoundY)
 			yVel = 0;
 
 		if (xAcc > 0.1)
-			xAcc -= 0.002;
+			xAcc -= 0.2;
 		else if (xAcc < -0.1)
-			xAcc += 0.002;
+			xAcc += 0.2;
 
 		double rounded = std::ceil(xAcc * 100.0) / 100.0;
 
@@ -220,10 +224,14 @@ void Player::update(Events::updateEvent ev)
 
 void Player::keyDown(SDL_KeyboardEvent ev)
 {
-	if (Game::getKey(SDLK_w) && isLocal && jumps > 0 && (touchingBoundX && touchingPlayer || touchingBoundY && !touchingPlayer))
+	if (Game::getKey(SDLK_w) && isLocal && jumps > 0)
 	{
 		jumps--;
-		yVel = -0.5;
+		std::cout << jumps << std::endl;
+		yVel -= 6;
+		setY((y + yVel));
+		touchingBoundY = false;
+		framesJumped = 0;
 	}
 
 	if (Game::getKey(SDLK_r) && isLocal && !reloading)
@@ -239,7 +247,7 @@ bool checkCol(Player* self, int newX, int newY)
 	for (int i = 0; i < Game::getGlobalObjects()->size(); i++)
 	{
 		Object* obj = (*Game::getGlobalObjects())[i];
-		Player* p = NULL;
+		Player* p;
 		switch (obj->type)
 		{
 			case Player_e:
@@ -346,11 +354,8 @@ void Player::onShot(SPacketShootResponse_t ev)
 
 	float angle = std::atan2(y - ev.MousePosition.y, x - ev.MousePosition.x) * 180 / M_PI;
 
-	// make values small
-
-
-	deltaX = Utils::clamp(deltaX * 0.004,0.4,1);
-	deltaY = Utils::clamp(deltaY * 0.004, 0.4, 1);
+	deltaX = Utils::clamp(deltaX,-4,4);
+	deltaY = Utils::clamp(deltaY,-4,4);
 
 	deltaX = -deltaX;
 	deltaY = -deltaY;

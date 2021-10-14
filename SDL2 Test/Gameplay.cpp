@@ -1,5 +1,6 @@
 #include "Gameplay.h"
-
+#include "fmt/format.h"
+#include <boost/lexical_cast.hpp>
 std::vector<Player*>* entitiesToRemove;
 std::vector<Bullet*>* bulletsToRemove;
 
@@ -11,7 +12,6 @@ void Gameplay::reloadLevel()
 		w->create();
 	}
 }
-
 
 Gameplay::Gameplay()
 {
@@ -42,8 +42,8 @@ void updatePlayers()
 	{
 		Entity en = Multiplayer::getEntites()[i];
 
-		Player* p;
-		Bullet* b;
+		Player* p = nullptr;
+		Bullet* b = nullptr;
 
 		switch (en.EntityType)
 		{
@@ -67,7 +67,10 @@ void updatePlayers()
 			{
 				b = (*Bullet::getBullets())[i];
 				if (!b)
+				{
+					delete b;
 					continue;
+				}
 
 				if (en.id != b->mpEntity.id)
 					continue;
@@ -93,14 +96,18 @@ void updatePlayers()
 
 			break;
 		}
+
+		if (p == nullptr)
+			delete p;
+		if (b == nullptr)
+			delete b;
 	}
 
 	for (int i = 0; i < Game::getGlobalObjects()->size(); i++)
 	{
 		Object* obj = (*Game::getGlobalObjects())[i];
 
-		Player* p;
-		Bullet* b;
+		Player* p = nullptr;
 
 		switch (obj->type)
 		{
@@ -118,13 +125,18 @@ void updatePlayers()
 			}
 			break;
 		}
+		if (p == nullptr)
+			delete p;
 	}
 
 	for (int i = 0; i < Bullet::getBullets()->size(); i++)
 	{
 		Bullet* b = (*Bullet::getBullets())[i];
 		if (!b)
+		{
+			delete b;
 			continue;
+		}
 
 		if (!containsEntity(b->mpEntity.id))
 		{
@@ -173,6 +185,8 @@ Player* Gameplay::getLocalPlayer()
 		p->mpEntity = en;
 		p->isLocal = true;
 		p->create();
+
+		std::cout << "created player" << std::endl;
 	}
 	return p;
 }
@@ -224,8 +238,6 @@ Player* Gameplay::createPlayer(Entity en)
 	return findPlayerById(en.id);
 }
 
-
-
 void Gameplay::update(Events::updateEvent update)
 {
 	SDL_SetWindowTitle(update.window, "Gaming");
@@ -251,9 +263,17 @@ void Gameplay::update(Events::updateEvent update)
 	bulletsToRemove->clear();
 	entitiesToRemove->clear();
 
-	if (Multiplayer::loggedIn)
-		getHud()->setText(("FPS: " + std::to_string(Game::gameFPS) + "\nHealth: " + std::to_string(getLocalPlayer()->health) + "\nAmmo: " + std::to_string(getLocalPlayer()->ammo)));
-	else
-		getHud()->setText(("FPS: " + std::to_string(Game::gameFPS) + "\nNot logged in"));
+	Player* local = getLocalPlayer();
+
+	if (local)
+	{
+
+		if (Multiplayer::loggedIn)
+			getHud()->setText("FPS: " + boost::lexical_cast<std::string>(Game::gameFPS) + "\nAmmo: " + boost::lexical_cast<std::string>(local->ammo) + "\nHealth: " + boost::lexical_cast<std::string>(local->health));
+
+		ImGui::BulletText("Objects: %i", Game::getGlobalObjects()->size());
+		ImGui::BulletText("XVel: %f YVel: %f", local->xVel, local->yVel);
+		ImGui::BulletText("Touching X Axis: %d Touching Y Axis: %d", local->touchingBoundX, local->touchingBoundY);
+	}
 }
 

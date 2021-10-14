@@ -24,6 +24,9 @@ class Object
 		bool touchingBoundX;
 		bool touchingBoundY;
 
+		bool touchingBoundNegX;
+		bool touchingBoundNegY;
+
 		bool isDead = false;
 
 		void die();

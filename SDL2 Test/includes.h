@@ -4,6 +4,9 @@
 #include <SDL_image.h>
 #include <vector>
 #include <string>
+#include "imgui_sdl.h"
+#include "imgui.h"
+#include "implot.h";
 
 class Events
 {

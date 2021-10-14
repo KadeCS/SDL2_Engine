@@ -40,8 +40,6 @@ void TextBox::update(Events::updateEvent event)
 
 	Uint32 buttons;
 
-	SDL_PumpEvents();
-
 	buttons = SDL_GetMouseState(&m_x, &m_y);
 
 	if ((buttons & SDL_BUTTON_LMASK) != 0)
