@@ -26,6 +26,23 @@ Entity mpEntity;
 int framesJumped = 0;
 int jumps = 1;
 
+Object* Player::checkCol(int xPos, int yPos)
+{
+	for (int i = 0; i < Game::getGlobalObjects()->size(); i++)
+	{
+		Object* obj = (*Game::getGlobalObjects())[i];
+		switch (obj->type)
+		{
+			case Wall_e:
+				if (isColiding(obj, xPos, yPos))
+					return obj;
+				break;
+		}
+	}
+	return NULL;
+}
+
+
 Asset* getPlayerAsset()
 {
 	static Asset* as;
@@ -38,8 +55,6 @@ Player::Player(float x, float y) : Object(x, y)
 {
 	type = Player_e;
 	touchingPlayer = false;
-	touchingBoundY = false;
-	touchingBoundX = false;
 }
 
 void Player::update(Events::updateEvent ev)
@@ -72,9 +87,6 @@ void Player::update(Events::updateEvent ev)
 
 		if (ammo > 6)
 			ammo = 6;
-
-		if (touchingBoundY)
-			jumps = 2;
 
 
 		if (Game::getKey(SDLK_a))
@@ -148,22 +160,50 @@ void Player::update(Events::updateEvent ev)
 
 		float time = ((SDL_GetTicks() - Game::startTick));
 
+		yVel += 0.1;
+
+		Object* xCheck = checkColX(x + xVel);
+
+		if (xCheck != NULL)
+		{
+			xVel = 0;
+			x = xCheck->x - rect.w;
+		}
+
+		Object* yCheck = checkColY(y + yVel);
+
+		if (yCheck != NULL)
+		{
+			jumps = 1;
+			yVel = 0;
+			y = yCheck->y - rect.h;
+		}
+
+		Object* xNegCheck = checkColX(x - xVel);
+
+		if (xNegCheck != NULL)
+		{
+			xVel = 0;
+			x = xNegCheck->x + rect.w;
+		}
+
+		Object* yNegCheck = checkColY(y - yVel);
+
+		if (yNegCheck != NULL)
+		{
+			yVel = 0;
+			y = yNegCheck->y + rect.h;
+		}
+
+
 
 		setY((y + yVel));
 		setX((x + xVel));
 
 
-		if (framesJumped < 5)
-			framesJumped++;
-
-		if (yVel < 1 && framesJumped >= 5)
-			yVel += 1.4;
-
 		if (yVel > 4)
 			yVel = 4;
-
-		if (touchingBoundY)
-			yVel = 0;
+		
 
 		if (xAcc > 0.1)
 			xAcc -= 0.2;
@@ -228,9 +268,8 @@ void Player::keyDown(SDL_KeyboardEvent ev)
 	{
 		jumps--;
 		std::cout << jumps << std::endl;
-		yVel -= 6;
+		yVel = -4;
 		setY((y + yVel));
-		touchingBoundY = false;
 		framesJumped = 0;
 	}
 
@@ -240,36 +279,6 @@ void Player::keyDown(SDL_KeyboardEvent ev)
 		reloading = true;
 		std::cout << "reloading";
 	}
-}
-
-bool checkCol(Player* self, int newX, int newY)
-{
-	for (int i = 0; i < Game::getGlobalObjects()->size(); i++)
-	{
-		Object* obj = (*Game::getGlobalObjects())[i];
-		Player* p;
-		switch (obj->type)
-		{
-			case Player_e:
-				p = (Player*)obj;
-				if (p->mpEntity.id != self->mpEntity.id)
-					if (self->isColiding(p, self))
-					{
-						self->touchingPlayer = true;
-						return true;
-					}
-					else
-						self->touchingPlayer = false;
-				break;
-			case Wall_e:
-				if (self->isColiding(obj, self))
-				{
-					return true;
-				}
-				break;
-		}
-	}
-	return false;
 }
 
 void Player::setX(float nx)
@@ -287,23 +296,9 @@ void Player::setX(float nx)
 		return;
 
 	float xBound = SDL_GetWindowSurface(Game::window)->w - *w;
-	if (nx >= xBound)
-		touchingBoundX = true;
-	else
-		touchingBoundX = false;
 	this->x = Utils::clamp(nx, 0, xBound);
 
 	rect.x = x;
-
-	if (isLocal)
-		if (checkCol(this, nx, this->y))
-		{
-			this->x = previousX;
-			touchingBoundX = true;
-			rect.x = x;
-			return;
-		}
-
 }
 
 void Player::setY(float ny)
@@ -321,22 +316,10 @@ void Player::setY(float ny)
 		return;
 
 	float yBound = SDL_GetWindowSurface(Game::window)->h - *h;
-	if (ny >= yBound)
-		touchingBoundY = true;
-	else
-		touchingBoundY = false;
 	this->y = Utils::clamp(ny, 0, yBound);
 
 	rect.y = y;
 
-	if (isLocal)
-		if (checkCol(this, ny, this->y))
-		{
-			this->y = previousY;
-			touchingBoundY = true;
-			rect.y = y;
-			return;
-		}
 }
 
 void Player::onShot(SPacketShootResponse_t ev)

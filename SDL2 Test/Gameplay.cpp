@@ -49,7 +49,9 @@ void updatePlayers()
 		{
 		case 0:
 			if (en.id == Multiplayer::localId)
+			{
 				continue;
+			}
 
 			p = Gameplay::createPlayer(en);
 			p->positionTime = 0;
@@ -273,7 +275,6 @@ void Gameplay::update(Events::updateEvent update)
 
 		ImGui::BulletText("Objects: %i", Game::getGlobalObjects()->size());
 		ImGui::BulletText("XVel: %f YVel: %f", local->xVel, local->yVel);
-		ImGui::BulletText("Touching X Axis: %d Touching Y Axis: %d", local->touchingBoundX, local->touchingBoundY);
 	}
 }
 

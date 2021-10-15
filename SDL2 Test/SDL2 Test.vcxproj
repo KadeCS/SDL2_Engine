@@ -161,7 +161,6 @@
     <ClInclude Include="Bullet.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Gameplay.h" />
-    <ClInclude Include="imgui_sdl.h" />
     <ClInclude Include="includes.h" />
     <ClInclude Include="json.hpp" />
     <ClInclude Include="Level.h" />

@@ -8,10 +8,6 @@
 
 Object::Object(float x, float y)
 {
-	touchingBoundNegX = false;
-	touchingBoundNegY = false;
-	touchingBoundX = false;
-	touchingBoundY = false;
 	setX(x);
 	setY(y);
 	isCreated = false;
@@ -28,10 +24,6 @@ void Object::setX(float x)
 	if (isDead)
 		return;
 	float xBound = SDL_GetWindowSurface(Game::window)->w - 10;
-	if (x >= xBound)
-		touchingBoundX = true;
-	else
-		touchingBoundX = false;
 	this->x = Utils::clamp(x, 0, xBound);
 }
 
@@ -40,75 +32,7 @@ void Object::setY(float y)
 	if (isDead)
 		return;
 	float yBound = SDL_GetWindowSurface(Game::window)->w - 10;
-	if (y >= yBound)
-		touchingBoundY = true;
-	else
-		touchingBoundY = false;
 	this->y = Utils::clamp(y, 0, yBound);
-}
-
-bool Object::isColiding(Object* obj, Object* self)
-{
-	if (obj->type == Player_e)
-	{
-		Player* p = (Player*)obj;
-		Player* pSelf = (Player*)self;
-
-		SDL_Rect rec;
-
-		rec.x = (int) p->rect.x;
-		rec.y = (int) p->rect.y;
-		rec.w = p->rect.w;
-		rec.h = p->rect.h;
-
-		SDL_Rect recS;
-
-		recS.x = (int)pSelf->rect.x;
-		recS.y = (int)pSelf->rect.y;
-		recS.w = pSelf->rect.w;
-		recS.h = pSelf->rect.h;
-
-		if (SDL_HasIntersection(&rec,&recS))
-			return true;
-		recS.x += 1;
-		recS.y += 1;
-		if (SDL_HasIntersection(&rec, &recS))
-			return true;
-	}
-	else if (obj->type == Wall_e)
-	{
-		Player* pSelf = (Player*)self;
-		Wall* w = (Wall*)obj;
-
-		SDL_Rect rec;
-
-		rec.x = (int)w->rect.x;
-		rec.y = (int)w->rect.y;
-		rec.w = w->rect.w;
-		rec.h = w->rect.h;
-
-		SDL_Rect recS;
-
-		recS.x = (int)pSelf->rect.x;
-		recS.y = (int)pSelf->rect.y;
-		recS.w = pSelf->rect.w;
-		recS.h = pSelf->rect.h;
-
-		if (SDL_HasIntersection(&rec, &recS))
-			return true;
-		recS.x += 1;
-		if (SDL_HasIntersection(&rec, &recS))
-		{
-			self->touchingBoundX = true;
-		}
-		recS.y += 1;
-		if (SDL_HasIntersection(&rec, &recS))
-		{
-			self->touchingBoundY = true;
-		}
-	}
-
-	return false;
 }
 
 void Object::die()
@@ -119,6 +43,54 @@ void Object::die()
 	if (!this)
 		delete this;
 }
+
+bool Object::isColidingX(Object* obj, int pointX)
+{
+	Player* p = (Player*)this;
+	Player* pp;
+	Wall* wall;
+
+	switch (obj->type)
+	{
+		case Player_e:
+			pp = (Player*)obj;
+			if ((pp->x <= p->x + p->rect.w && pp->x + pp->rect.w >= pointX))
+				return true;
+			break;
+		case Wall_e:
+			wall = (Wall*)obj;
+			if ((wall->x <= p->x + p->rect.w && wall->x + wall->rect.w >= pointX))
+				return true;
+			break;
+	}
+
+	return false;
+}
+
+bool Object::isColidingY(Object* obj, int pointY)
+{
+	Player* p = (Player*)this;
+	Player* pp;
+	Wall* wall;
+
+	switch (obj->type)
+	{
+	case Player_e:
+		pp = (Player*)obj;
+		if ((pp->y <= p->y + p->rect.h && pp->y + pp->rect.h >= pointY))
+			return true;
+		break;
+	case Wall_e:
+		wall = (Wall*)obj;
+		if ((wall->y <= p->y + p->rect.h && wall->y + wall->rect.h >= pointY))
+			return true;
+		break;
+	}
+
+	return false;
+}
+
+
 
 int* Object::getW(int* defaultW)
 {

@@ -25,13 +25,13 @@ public:
 
 	void keyDown(SDL_KeyboardEvent ev) override;
 
-	SDL_FRect rect;
-
 	bool isFocused;
 
 	void textInput(SDL_TextInputEvent ev) override;
 
 	std::string* text;
+
+	SDL_FRect rect;
 
 	Color color;
 	int w;

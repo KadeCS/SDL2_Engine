@@ -137,8 +137,5 @@
     <ClInclude Include="Level.h">
       <Filter>Source Files\Map</Filter>
     </ClInclude>
-    <ClInclude Include="imgui_sdl.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

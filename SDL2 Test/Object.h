@@ -21,18 +21,13 @@ class Object
 
 		bool isLocal = false;
 
-		bool touchingBoundX;
-		bool touchingBoundY;
-
-		bool touchingBoundNegX;
-		bool touchingBoundNegY;
-
 		bool isDead = false;
+
 
 		void die();
 
-		bool isColiding(Object* obj, Object* self);
-
+		bool isColidingX(Object* obj, int pointX);
+		bool isColidingY(Object* obj, int pointY);
 		int type;
 
 

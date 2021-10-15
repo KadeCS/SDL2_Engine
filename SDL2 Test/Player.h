@@ -16,9 +16,6 @@ class Player : public Object
 		void setY(float y) override;
 
 		void onShot(SPacketShootResponse_t ev);
-
-		SDL_FRect rect;
-
 		float yVel = 0;
 		float xVel = 0;
 		float xAcc = 0;
@@ -26,6 +23,10 @@ class Player : public Object
 		float health = 100;
 
 		int ammo = 6;
+
+		SDL_FRect rect;
+
+		Object* checkCol(int xPos, int yPos);
 
 		float lastX = 0;
 		float lastY = 0;

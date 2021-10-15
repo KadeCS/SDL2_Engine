@@ -10,6 +10,8 @@ using namespace std;
 #pragma comment(lib,"x86\\SDL2.lib")
 #pragma comment(lib,"x86\\SDL2_ttf.lib")
 #pragma comment(lib,"x86\\SDL2_image.lib")
+#pragma comment(lib,"x86\\imgui.lib")
+#pragma comment(lib,"x86\\implot.lib")
 
 #define FRAME_VALUES 60
 
