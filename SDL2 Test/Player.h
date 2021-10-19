@@ -26,7 +26,7 @@ class Player : public Object
 
 		SDL_FRect rect;
 
-		Object* checkCol(int xPos, int yPos);
+		void checkCol();
 
 		float lastX = 0;
 		float lastY = 0;

@@ -275,6 +275,7 @@ void Gameplay::update(Events::updateEvent update)
 
 		ImGui::BulletText("Objects: %i", Game::getGlobalObjects()->size());
 		ImGui::BulletText("XVel: %f YVel: %f", local->xVel, local->yVel);
+		ImGui::BulletText("X: %f Y: %f", local->x, local->y);
 	}
 }
 

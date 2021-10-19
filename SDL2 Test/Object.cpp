@@ -54,12 +54,16 @@ bool Object::isColidingX(Object* obj, int pointX)
 	{
 		case Player_e:
 			pp = (Player*)obj;
-			if ((pp->x <= p->x + p->rect.w && pp->x + pp->rect.w >= pointX))
-				return true;
+			if (!pp->isLocal)
+				if ((pp->x <= p->x + p->rect.w && pp->x + pp->rect.w >= pointX))
+				{
+					std::cout << "player col" << std::endl;
+					return true;
+				}
 			break;
 		case Wall_e:
 			wall = (Wall*)obj;
-			if ((wall->x <= p->x + p->rect.w && wall->x + wall->rect.w >= pointX))
+			if ((pointX <= wall->x + wall->rect.w && wall->x + wall->rect.w >= pointX))
 				return true;
 			break;
 	}
@@ -77,12 +81,13 @@ bool Object::isColidingY(Object* obj, int pointY)
 	{
 	case Player_e:
 		pp = (Player*)obj;
-		if ((pp->y <= p->y + p->rect.h && pp->y + pp->rect.h >= pointY))
-			return true;
+		if (!pp->isLocal)
+			if ((pp->y <= p->y + p->rect.h && pp->y + pp->rect.h >= pointY))
+				return true;
 		break;
 	case Wall_e:
 		wall = (Wall*)obj;
-		if ((wall->y <= p->y + p->rect.h && wall->y + wall->rect.h >= pointY))
+		if ((pointY <= wall->y + wall->rect.h && wall->y + wall->rect.h >= pointY))
 			return true;
 		break;
 	}

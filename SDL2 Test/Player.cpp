@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Bullet.h"
 #include "Assets.h"
+#include "Wall.h"
 #include <cmath>
 #include "Utils.h"
 #include <iostream>
@@ -26,7 +27,7 @@ Entity mpEntity;
 int framesJumped = 0;
 int jumps = 1;
 
-Object* Player::checkCol(int xPos, int yPos)
+void Player::checkCol()
 {
 	for (int i = 0; i < Game::getGlobalObjects()->size(); i++)
 	{
@@ -34,13 +35,30 @@ Object* Player::checkCol(int xPos, int yPos)
 		switch (obj->type)
 		{
 			case Wall_e:
-				if (isColiding(obj, xPos, yPos))
-					return obj;
+				SDL_Rect r;
+				SDL_Rect objR;
+				r.x = rect.x;
+				r.y = rect.y;
+				r.w = rect.w;
+				r.h = rect.h;
+				objR.x = ((Wall*)obj)->rect.x;
+				objR.y = ((Wall*)obj)->rect.y;
+				objR.w = ((Wall*)obj)->rect.w;
+				objR.h = ((Wall*)obj)->rect.h;
+
+				if (SDL_HasIntersection(&r, &objR))
+				{
+					xVel = 0;
+					yVel = 0;
+				}
+				r.y += r.w;
+				if (SDL_HasIntersection(&r, &objR))
+					jumps = 1;
 				break;
 		}
 	}
-	return NULL;
 }
+
 
 
 Asset* getPlayerAsset()
@@ -162,40 +180,7 @@ void Player::update(Events::updateEvent ev)
 
 		yVel += 0.1;
 
-		Object* xCheck = checkColX(x + xVel);
-
-		if (xCheck != NULL)
-		{
-			xVel = 0;
-			x = xCheck->x - rect.w;
-		}
-
-		Object* yCheck = checkColY(y + yVel);
-
-		if (yCheck != NULL)
-		{
-			jumps = 1;
-			yVel = 0;
-			y = yCheck->y - rect.h;
-		}
-
-		Object* xNegCheck = checkColX(x - xVel);
-
-		if (xNegCheck != NULL)
-		{
-			xVel = 0;
-			x = xNegCheck->x + rect.w;
-		}
-
-		Object* yNegCheck = checkColY(y - yVel);
-
-		if (yNegCheck != NULL)
-		{
-			yVel = 0;
-			y = yNegCheck->y + rect.h;
-		}
-
-
+		checkCol();
 
 		setY((y + yVel));
 		setX((x + xVel));
