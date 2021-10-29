@@ -68,8 +68,8 @@ void Game::update(Events::updateEvent update)
 	{
 		try
 		{
-			Object* fuck = (*objects)[i];
-			fuck->update(update);
+			Object* bruh = (*objects)[i];
+			bruh->update(update);
 		}
 		catch (...)
 		{
@@ -88,8 +88,8 @@ void Game::keyDown(SDL_KeyboardEvent ev)
 
 	for (int i = 0; i < objects->size(); i++)
 	{
-		Object* fuck = (*objects)[i];
-		fuck->keyDown(ev);
+		Object* bruh = (*objects)[i];
+		bruh->keyDown(ev);
 	}
 
 }

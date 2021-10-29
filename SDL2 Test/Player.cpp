@@ -37,23 +37,39 @@ void Player::checkCol()
 			case Wall_e:
 				SDL_Rect r;
 				SDL_Rect objR;
-				r.x = rect.x;
-				r.y = rect.y;
-				r.w = rect.w;
-				r.h = rect.h;
+				r.x = rect.x + xVel;
+				r.y = rect.y + yVel;
+				r.w = rect.w + xVel;
+				r.h = rect.h + yVel;
 				objR.x = ((Wall*)obj)->rect.x;
 				objR.y = ((Wall*)obj)->rect.y;
 				objR.w = ((Wall*)obj)->rect.w;
 				objR.h = ((Wall*)obj)->rect.h;
 
+
+				r.x += 1;
 				if (SDL_HasIntersection(&r, &objR))
 				{
 					xVel = 0;
+				}
+				r.x -= 2;
+				if (SDL_HasIntersection(&r, &objR))
+				{
+					xVel = 0;
+				}
+				r.x = rect.x;
+				r.y += 1;
+				if (SDL_HasIntersection(&r, &objR))
+				{
+					jumps = 1;
 					yVel = 0;
 				}
-				r.y += r.w;
+				r.y -= 2;
 				if (SDL_HasIntersection(&r, &objR))
-					jumps = 1;
+				{
+					jumps = 0;
+					yVel = 0;
+				}
 				break;
 		}
 	}
