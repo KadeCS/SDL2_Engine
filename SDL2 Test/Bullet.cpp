@@ -6,9 +6,8 @@ void Bullet::update(Events::updateEvent ev)
 {
 	if (isDead)
 		return;
-	SDL_FRect rect;
 
-	if (SDL_GetTicks() % 35 == 0)
+	if (SDL_GetTicks() % 2 == 0)
 	{
 		bulletX += direction.x * 20;
 		bulletY += direction.y * 20;

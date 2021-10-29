@@ -184,6 +184,7 @@ void on_message(client* c, websocketpp::connection_hdl hdl, client::message_ptr 
 
             break;
         case SPacketShootResponse:
+			std::cout << "recieved " << data << std::endl;
             unpack(result, data, length);
 
             obj = msgpack::object(result.get());
@@ -197,6 +198,7 @@ void on_message(client* c, websocketpp::connection_hdl hdl, client::message_ptr 
             Entity en = Gameplay::findEntityById(shoot.id);
 
             Bullet* b = new Bullet(en.position.x,en.position.y);
+			b->isLocal = true;
             b->mpEntity = en;
             Bullet::addBullet(b);
             b->create();

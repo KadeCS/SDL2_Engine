@@ -15,6 +15,8 @@ class Bullet : public Object
 
 		int type = Bullet_e;
 
+		SDL_FRect rect;
+
 		Entity mpEntity;
 
 		vector2 direction;

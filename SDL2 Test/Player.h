@@ -20,6 +20,13 @@ class Player : public Object
 		float xVel = 0;
 		float xAcc = 0;
 
+		float r = 255;
+		float g = 255;
+		float b = 255;
+
+		float localHitTime = 0;
+		bool hit = false;
+
 		float health = 100;
 
 		int ammo = 6;

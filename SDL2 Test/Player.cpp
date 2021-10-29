@@ -32,11 +32,12 @@ void Player::checkCol()
 	for (int i = 0; i < Game::getGlobalObjects()->size(); i++)
 	{
 		Object* obj = (*Game::getGlobalObjects())[i];
+
+		SDL_Rect r;
+		SDL_Rect objR;
 		switch (obj->type)
 		{
 			case Wall_e:
-				SDL_Rect r;
-				SDL_Rect objR;
 				r.x = rect.x + xVel;
 				r.y = rect.y + yVel;
 				r.w = rect.w + xVel;
@@ -73,6 +74,39 @@ void Player::checkCol()
 				break;
 		}
 	}
+
+	for (int i = 0; i < Bullet::getBullets()->size(); i++)
+	{
+		Bullet* b = (*Bullet::getBullets())[i];
+		if (!b)
+		{
+			delete b;
+			continue;
+		}
+
+		SDL_Rect r;
+		SDL_Rect objR;
+
+		r.x = rect.x;
+		r.y = rect.y;
+		r.w = rect.w;
+		r.h = rect.h;
+		objR.x = b->rect.x;
+		objR.y = b->rect.y;
+		objR.w = b->rect.w;
+		objR.h = b->rect.h;
+
+		if (SDL_HasIntersection(&r, &objR))
+		{
+			if (!hit && !b->isLocal)
+			{
+				std::cout << "youch!" << std::endl;
+				hit = true;
+				health -= 25;
+				localHitTime = SDL_GetTicks();
+			}
+		}
+	}
 }
 
 
@@ -91,6 +125,10 @@ Player::Player(float x, float y) : Object(x, y)
 	touchingPlayer = false;
 }
 
+bool reverseAnim = false;
+
+float redFlash = 0;
+
 void Player::update(Events::updateEvent ev)
 {
 	if (isDead)
@@ -100,6 +138,41 @@ void Player::update(Events::updateEvent ev)
 
 	isLocal = Multiplayer::localId == mpEntity.id;
 
+	if (health < 0 || health == 0)
+	{
+		health = 100;
+		setX(396);
+		setY(300);
+	}
+
+	if (hit)
+	{
+		if (SDL_GetTicks() % 2 == 0)
+		{
+			if (!reverseAnim)
+			{
+				alpha = 125;
+				reverseAnim = true;
+			}
+			else if (reverseAnim)
+			{
+				alpha = 255;
+				reverseAnim = false;
+			}
+		}
+		redFlash += Game::deltaTime / 25;
+		g = Utils::lerp(g, 125, redFlash);
+		b = Utils::lerp(b, 125, redFlash);
+
+		if (localHitTime + 2500 < SDL_GetTicks())
+		{
+			hit = false;
+			alpha = 255;
+			g = 255;
+			b = 255;
+		}
+	}
+
 	if (isLocal)
 	{
 
@@ -107,7 +180,7 @@ void Player::update(Events::updateEvent ev)
 		{
 			if (ammo < 6)
 			{
-				if (reloadingTimer % 400 == 0)
+				if (reloadingTimer % 40 == 0)
 				{
 					ammo++;
 				}
@@ -121,6 +194,8 @@ void Player::update(Events::updateEvent ev)
 
 		if (ammo > 6)
 			ammo = 6;
+		else if (ammo < 0)
+			ammo = 0;
 
 
 		if (Game::getKey(SDLK_a))
@@ -222,10 +297,17 @@ void Player::update(Events::updateEvent ev)
 	rect.w = *getW(&as->w);
 	rect.h = *getH(&as->h);
 
-	SDL_RenderCopyF(ev.renderer, getPlayerAsset()->texture, NULL, &rect);
+	SDL_Texture* texture = getPlayerAsset()->texture;
+
+	SDL_SetRenderDrawBlendMode(ev.renderer, SDL_BLENDMODE_BLEND);
+	SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+	SDL_SetTextureColorMod(texture, r, g, b);
+	SDL_SetTextureAlphaMod(texture, alpha);
+
+	SDL_RenderCopyF(ev.renderer, texture, NULL, &rect);
 
 
-	if (isLocal && SDL_GetTicks() % 35 == 0)
+	if (isLocal && SDL_GetTicks() % 1 == 0)
 	{
 		CPacketUpdateEntity_t update;
 
@@ -245,7 +327,7 @@ void Player::update(Events::updateEvent ev)
 	else if (!isLocal)
 	{
 		SDL_Surface* screen = SDL_GetWindowSurface(ev.window);
-		positionTime += Game::deltaTime / 200;
+		positionTime += Game::deltaTime / 25;
 		setX(Utils::lerp(lastX, toX, Utils::clamp(positionTime, 0, 1)));
 		setY(Utils::lerp(lastY, toY, Utils::clamp(positionTime, 0, 1)));
 	}

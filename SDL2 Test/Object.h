@@ -14,6 +14,7 @@ class Object
 		virtual void keyDown(SDL_KeyboardEvent ev) {};
 		virtual void textInput(SDL_TextInputEvent ev) {};
 
+		float alpha = 255;
 		float x = 0;
 		float y = 0;
 		virtual int* getW(int* defaultW);
