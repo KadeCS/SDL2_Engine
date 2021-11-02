@@ -5,6 +5,7 @@
 #include "Bullet.h"
 #include "Level.h"
 #include "Wall.h"
+#include "Camera.h"
 class Gameplay :
     public Menu
 {
@@ -25,5 +26,7 @@ class Gameplay :
 		static Entity findEntityById(unsigned int);
 		static Player* findPlayerById(unsigned int);
 		static Player* createPlayer(Entity en);
+
+
 };
 

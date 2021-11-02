@@ -140,6 +140,7 @@
   <ItemGroup>
     <ClCompile Include="Assets.cpp" />
     <ClCompile Include="Bullet.cpp" />
+    <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Gameplay.cpp" />
     <ClCompile Include="imgui_sdl.cpp" />
@@ -150,6 +151,7 @@
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Multiplayer.cpp" />
     <ClCompile Include="Object.cpp" />
+    <ClCompile Include="Particles.cpp" />
     <ClCompile Include="Player.cpp" />
     <ClCompile Include="TextBox.cpp" />
     <ClCompile Include="TextDisplay.cpp" />
@@ -159,6 +161,7 @@
   <ItemGroup>
     <ClInclude Include="Assets.h" />
     <ClInclude Include="Bullet.h" />
+    <ClInclude Include="Camera.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Gameplay.h" />
     <ClInclude Include="includes.h" />
@@ -170,6 +173,7 @@
     <ClInclude Include="Multiplayer.h" />
     <ClInclude Include="Object.h" />
     <ClInclude Include="Packets.h" />
+    <ClInclude Include="Particles.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="TextBox.h" />
     <ClInclude Include="TextDisplay.h" />

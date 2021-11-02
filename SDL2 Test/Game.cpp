@@ -12,6 +12,7 @@ using namespace std;
 vector<Object*>* objects;
 
 Menu* Game::currentMenu = NULL;
+Camera* Game::mainCamera = NULL;
 
 map<int, bool> Game::controls = {
 	{SDLK_w, false},
@@ -37,6 +38,8 @@ void Game::createGame()
 
 	// to start
 	currentMenu = new MainMenu();
+	mainCamera = new Camera();
+	mainCamera->cameraTexture = SDL_CreateTexture(renderer, SDL_PIXELFORMAT_RGBA8888, SDL_TEXTUREACCESS_TARGET, 792, 600);
 }
 
 bool Game::containsObject(unsigned int id)
@@ -58,9 +61,17 @@ bool Game::containsObject(unsigned int id)
 	return false;
 }
 
+
 void Game::update(Events::updateEvent update)
 {
+
 	SDL_RenderClear(update.renderer);
+
+	SDL_SetRenderTarget(renderer, mainCamera->cameraTexture);
+
+	SDL_RenderClear(update.renderer);
+
+	mainCamera->update(update);
 
 	currentMenu->update(update);
 
@@ -77,6 +88,25 @@ void Game::update(Events::updateEvent update)
 		}
 	}
 
+	SDL_Rect DestR;
+
+	DestR.x = mainCamera->x;
+	DestR.y = mainCamera->y;
+	DestR.w = mainCamera->w;
+	DestR.h = mainCamera->h;
+
+	SDL_SetRenderDrawColor(renderer, 10, 10, 10, 255);
+
+	SDL_SetRenderTarget(renderer, NULL);
+
+	SDL_RenderCopy(renderer, mainCamera->cameraTexture, NULL, &DestR);
+
+	ImGui::End();
+
+	ImGui::Render();
+	ImGuiSDL::Render(ImGui::GetDrawData());
+
+	SDL_RenderPresent(renderer);
 }
 
 void Game::keyDown(SDL_KeyboardEvent ev)
@@ -128,7 +158,7 @@ void Game::textInput(SDL_TextInputEvent event)
 {
 	for (int i = 0; i < objects->size(); i++)
 	{
-		Object* fuck = (*objects)[i];
-		fuck->textInput(event);
+		Object* btuh = (*objects)[i];
+		btuh->textInput(event);
 	}
 }

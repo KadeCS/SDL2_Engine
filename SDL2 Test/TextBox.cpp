@@ -2,6 +2,7 @@
 #include "includes.h"
 #include <SDL_ttf.h>
 #include "Utils.h"
+#include "Game.h"
 
 void TextBox::update(Events::updateEvent event)
 {
@@ -63,8 +64,6 @@ void TextBox::update(Events::updateEvent event)
 		else
 			isFocused = false;
 	}
-
-	SDL_SetRenderTarget(event.renderer, NULL);
 
 	SDL_RenderCopy(event.renderer, message, NULL, &message_Rect);
 

@@ -2,6 +2,7 @@
 #include "Player.h"
 #include "Object.h"
 #include <map>
+#include "Camera.h"
 #include "Menu.h"
 
 class Game
@@ -18,6 +19,7 @@ class Game
 
 
 		static Menu* currentMenu;
+		static Camera* mainCamera;
 
 		static std::vector<Object*>* getGlobalObjects();
 		static void addGlobalObject(Object* obj);

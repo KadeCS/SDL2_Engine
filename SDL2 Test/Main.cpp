@@ -180,14 +180,6 @@ int main(int argc, char* argv[])
 		fpsthink();
 
 
-		ImGui::End();
-
-		ImGui::Render();
-		ImGuiSDL::Render(ImGui::GetDrawData());
-
-		SDL_SetRenderDrawColor(renderer, 10, 10, 10, 255);
-
-		SDL_RenderPresent(renderer);
 
 		if (1000 / 120 > SDL_GetTicks() - startTime) {
 			SDL_Delay(1000 / 120 - (SDL_GetTicks() - startTime));

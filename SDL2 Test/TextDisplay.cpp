@@ -34,7 +34,6 @@ void TextDisplay::update(Events::updateEvent ev)
 	message_Rect.w = rW;
 	message_Rect.h = rH;
 
-	SDL_SetRenderTarget(ev.renderer, NULL);
 
 	SDL_RenderCopy(ev.renderer, message, NULL, &message_Rect);
 }

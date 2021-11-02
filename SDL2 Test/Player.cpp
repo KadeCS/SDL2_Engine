@@ -250,6 +250,7 @@ void Player::update(Events::updateEvent ev)
 
 			std::cout << "sent bullet towards " << v1 << "," << v2 << std::endl;
 
+
 			Multiplayer::sendMessage<CPacketShoot_t>(shoot);
 
 			pressedM = true;
@@ -430,6 +431,8 @@ void Player::onShot(SPacketShootResponse_t ev)
 	yVel = deltaY;
 
 	std::cout << deltaX << "," << xAcc << "," << yVel << ", LEN " << len << ", ANGLE: " << angle << std::endl;
+
+	Game::mainCamera->shakeEffect(2, 100);
 
 	ammo--;
 }
