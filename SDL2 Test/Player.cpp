@@ -432,7 +432,7 @@ void Player::onShot(SPacketShootResponse_t ev)
 
 	std::cout << deltaX << "," << xAcc << "," << yVel << ", LEN " << len << ", ANGLE: " << angle << std::endl;
 
-	Game::mainCamera->shakeEffect(2, 100);
+	Game::mainCamera->shakeEffect(0.8, 100);
 
 	ammo--;
 }

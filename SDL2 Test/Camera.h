@@ -11,7 +11,7 @@ class Camera : public Object
 
 		void update(Events::updateEvent event) override;
 
-		void shakeEffect(int intensity, int ms);
+		void shakeEffect(float intensity, int ms);
 
 		int w = 792;
 		int h = 600;
