@@ -6,6 +6,7 @@
 #include "Wall.h"
 #include <cmath>
 #include "Utils.h"
+#include "Particles.h"
 #include <iostream>
 
 #include <math.h>
@@ -431,6 +432,7 @@ void Player::onShot(SPacketShootResponse_t ev)
 	yVel = deltaY;
 
 	std::cout << deltaX << "," << xAcc << "," << yVel << ", LEN " << len << ", ANGLE: " << angle << std::endl;
+
 
 	Game::mainCamera->shakeEffect(0.8, 100);
 

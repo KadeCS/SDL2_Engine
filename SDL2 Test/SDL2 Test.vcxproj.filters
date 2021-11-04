@@ -116,14 +116,8 @@
     <ClInclude Include="Utils.h">
       <Filter>Source Files\Misc</Filter>
     </ClInclude>
-    <ClInclude Include="Assets.h">
-      <Filter>Source Files\Misc</Filter>
-    </ClInclude>
     <ClInclude Include="Menu.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Gameplay.h">
-      <Filter>Source Files\Menu</Filter>
     </ClInclude>
     <ClInclude Include="MainMenu.h">
       <Filter>Source Files\Menu</Filter>
@@ -147,6 +141,12 @@
       <Filter>Source Files\Misc</Filter>
     </ClInclude>
     <ClInclude Include="Camera.h">
+      <Filter>Source Files\Misc</Filter>
+    </ClInclude>
+    <ClInclude Include="Gameplay.h">
+      <Filter>Source Files\Menu</Filter>
+    </ClInclude>
+    <ClInclude Include="Assets.h">
       <Filter>Source Files\Misc</Filter>
     </ClInclude>
   </ItemGroup>

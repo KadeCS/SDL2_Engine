@@ -111,24 +111,28 @@ void updatePlayers()
 
 		Player* p = nullptr;
 
-		switch (obj->type)
+		if (!obj)
 		{
-		case Player_e:
-			p = (Player*)obj;
-			if (!p)
-				continue;
-			if (!p->hasStarted)
-				continue;
 
-
-			if (!containsEntity(p->mpEntity.id))
+			switch (obj->type)
 			{
-				entitiesToRemove->push_back(p);
+			case Player_e:
+				p = (Player*)obj;
+				if (!p)
+					continue;
+				if (!p->hasStarted)
+					continue;
+
+
+				if (!containsEntity(p->mpEntity.id))
+				{
+					entitiesToRemove->push_back(p);
+				}
+				break;
 			}
-			break;
+			if (p == nullptr)
+				delete p;
 		}
-		if (p == nullptr)
-			delete p;
 	}
 
 	for (int i = 0; i < Bullet::getBullets()->size(); i++)

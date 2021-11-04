@@ -2,6 +2,7 @@
 #include "Game.h"
 #include "Bullet.h"
 #include "Gameplay.h"
+#include "Particles.h"
 
 typedef websocketpp::client<websocketpp::config::asio_tls_client> client;
 typedef websocketpp::lib::shared_ptr<websocketpp::lib::asio::ssl::context> context_ptr;
@@ -203,6 +204,13 @@ void on_message(client* c, websocketpp::connection_hdl hdl, client::message_ptr 
             Bullet::addBullet(b);
             b->create();
             b->direction = en.direction;
+
+
+			std::cout << "bullet " << en.direction.x << " " << en.direction.y << std::endl;
+
+			Particles* p = new Particles(b->x, b->y, en.direction.x, en.direction.y, 4, 450);
+			p->create();
+
             b->bulletX = en.position.x;
             b->bulletY = en.position.y;
 
