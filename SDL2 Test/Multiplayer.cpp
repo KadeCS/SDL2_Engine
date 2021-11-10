@@ -208,7 +208,7 @@ void on_message(client* c, websocketpp::connection_hdl hdl, client::message_ptr 
 
 			std::cout << "bullet " << en.direction.x << " " << en.direction.y << std::endl;
 
-			Particles* p = new Particles(b->x, b->y, en.direction.x, en.direction.y, 4, 450);
+			Particles* p = new Particles(b->x, b->y, en.direction.x, en.direction.y, 4, 850);
 			p->create();
 
             b->bulletX = en.position.x;

@@ -1,5 +1,6 @@
 #include "Gameplay.h"
 #include "fmt/format.h"
+#include "Particles.h"
 #include <boost/lexical_cast.hpp>
 std::vector<Player*>* entitiesToRemove;
 std::vector<Bullet*>* bulletsToRemove;
@@ -92,6 +93,8 @@ void updatePlayers()
 				b->direction = en.direction;
 				b->bulletX = en.position.x;
 				b->bulletY = en.position.y;
+				Particles* p = new Particles(b->x, b->y, en.direction.x, en.direction.y, 4, 850);
+				p->create();
 			}
 
 

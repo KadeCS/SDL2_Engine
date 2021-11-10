@@ -75,39 +75,6 @@ void Player::checkCol()
 				break;
 		}
 	}
-
-	for (int i = 0; i < Bullet::getBullets()->size(); i++)
-	{
-		Bullet* b = (*Bullet::getBullets())[i];
-		if (!b)
-		{
-			delete b;
-			continue;
-		}
-
-		SDL_Rect r;
-		SDL_Rect objR;
-
-		r.x = rect.x;
-		r.y = rect.y;
-		r.w = rect.w;
-		r.h = rect.h;
-		objR.x = b->rect.x;
-		objR.y = b->rect.y;
-		objR.w = b->rect.w;
-		objR.h = b->rect.h;
-
-		if (SDL_HasIntersection(&r, &objR))
-		{
-			if (!hit && !b->isLocal)
-			{
-				std::cout << "youch!" << std::endl;
-				hit = true;
-				health -= 25;
-				localHitTime = SDL_GetTicks();
-			}
-		}
-	}
 }
 
 
@@ -144,6 +111,43 @@ void Player::update(Events::updateEvent ev)
 		health = 100;
 		setX(396);
 		setY(300);
+	}
+
+	for (int i = 0; i < Bullet::getBullets()->size(); i++)
+	{
+		Bullet* b = (*Bullet::getBullets())[i];
+		if (!b)
+		{
+			delete b;
+			continue;
+		}
+
+		SDL_Rect r;
+		SDL_Rect objR;
+
+		r.x = rect.x;
+		r.y = rect.y;
+		r.w = rect.w;
+		r.h = rect.h;
+		objR.x = b->rect.x - 12;
+		objR.y = b->rect.y - 12;
+		objR.w = 24;
+		objR.h = 24;
+
+		if (isLocal)
+			SDL_RenderDrawRect(Game::renderer, &objR);
+
+		if (SDL_HasIntersection(&r, &objR))
+		{
+			if (!hit && (!b->isLocal || !isLocal))
+			{
+				std::cout << "youch!" << std::endl;
+				hit = true;
+				if (isLocal)
+					health -= 25;
+				localHitTime = SDL_GetTicks();
+			}
+		}
 	}
 
 	if (hit)
@@ -212,7 +216,7 @@ void Player::update(Events::updateEvent ev)
 
 		buttons = SDL_GetMouseState(&m_x, &m_y);
 
-		if ((buttons & SDL_BUTTON_LMASK) != 0 && !pressedM && ammo > 0) {
+		if ((buttons & SDL_BUTTON_LMASK) != 0 && !pressedM && ammo > 0 && !waitingOnShot) {
 			// pressed lmb
 
 
@@ -222,6 +226,8 @@ void Player::update(Events::updateEvent ev)
 			float deltaY = m_y - y;
 
 			float len = sqrt(pow(deltaX, 2) + pow(deltaY, 2));
+
+			waitingOnShot = true;
 
 			float v1 = deltaX / len;
 			float v2 = deltaY / len;
@@ -410,6 +416,7 @@ void Player::setY(float ny)
 void Player::onShot(SPacketShootResponse_t ev)
 {
 
+	waitingOnShot = false;
 	float deltaX = ev.MousePosition.x - x;
 	float deltaY = ev.MousePosition.y - y;
 
@@ -432,7 +439,6 @@ void Player::onShot(SPacketShootResponse_t ev)
 	yVel = deltaY;
 
 	std::cout << deltaX << "," << xAcc << "," << yVel << ", LEN " << len << ", ANGLE: " << angle << std::endl;
-
 
 	Game::mainCamera->shakeEffect(0.8, 100);
 

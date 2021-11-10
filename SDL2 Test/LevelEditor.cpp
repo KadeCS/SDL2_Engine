@@ -32,8 +32,6 @@ void LevelEditor::update(Events::updateEvent event)
 
 	SDL_SetRenderDrawColor(event.renderer, 255, 255, 255, 128);
 
-
-
 	SDL_RenderFillRectF(event.renderer, &highlight);
 
 	if ((buttons & SDL_BUTTON_LMASK) != 0)

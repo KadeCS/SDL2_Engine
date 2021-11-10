@@ -31,6 +31,8 @@ class Player : public Object
 
 		int ammo = 6;
 
+		bool waitingOnShot = false;
+
 		SDL_FRect rect;
 
 		void checkCol();
